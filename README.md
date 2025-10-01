@@ -1,2 +1,2 @@
-##PINQUEST
+## PINQUEST
 An interactive travel journal.
