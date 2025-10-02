@@ -63,6 +63,18 @@ export const loginUser = async (req, res) => {
         return res.status(401).json({ error: "Invalid email or password." });
     }
     const token = generateToken({ id: user.id, email: user.email });
-    res.setHeader("Authorization", `Bearer ${token}`);
     res.status(200).json({ message: "Login successful.", token });
+};
+
+// <--------- GET USER PROFILE --------->
+export const getUserProfile = async (req, res) => {
+    req.user;
+    if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await getUserByEmail(req.user.email);
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ user });
 };
