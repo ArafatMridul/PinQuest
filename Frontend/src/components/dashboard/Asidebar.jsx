@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
     return (
-        <aside className="w-64 bg-white shadow-lg flex flex-col">
+        <aside className="w-64 bg-white shadow-lg flex flex-col fixed top-0 bottom-0 ">
             <Link to="/" className="p-6 text-2xl font-bold text-blue-600">
                 PinQuest
             </Link>
