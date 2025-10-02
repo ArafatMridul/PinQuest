@@ -4,7 +4,7 @@ import {
     MapIcon,
     GlobeEuropeAfricaIcon,
     Battery100Icon,
-    UserIcon
+    UserIcon,
 } from "@heroicons/react/24/outline";
 
 import Asidebar from "../components/dashboard/Asidebar";
@@ -25,12 +25,18 @@ const menuItems = [
 ];
 
 export default function DashBoard() {
-    const [activeMenu, setActiveMenu] = useState("Home");
+    const [activeMenu, setActiveMenu] = useState("Travel Journal");
 
     return (
-        <div className="h-screen flex bg-gray-100">
-            <Asidebar menuItems={menuItems} setActiveMenu={setActiveMenu} activeMenu={activeMenu} />
-            <Main activeMenu={activeMenu}  />
+        <div className="min-h-screen flex bg-gray-100">
+            <div className="w-64">
+                <Asidebar
+                    menuItems={menuItems}
+                    setActiveMenu={setActiveMenu}
+                    activeMenu={activeMenu}
+                />
+            </div>
+            <Main activeMenu={activeMenu} />
         </div>
     );
 }
