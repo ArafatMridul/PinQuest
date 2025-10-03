@@ -120,7 +120,7 @@
 }
 
 @theme {
-    --font-pp: "Poppins", sans-serif;
+    --font-pp: "Space Mono", monospace;
 }
 
 @layer utilities {

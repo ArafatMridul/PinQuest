@@ -27,7 +27,8 @@ const UserProvider = ({ children }) => {
         };
         getUserInfo();
     }, [token]);
-
+    
+    console.log(user);
     return (
         <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
     );
