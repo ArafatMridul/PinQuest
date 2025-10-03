@@ -9,7 +9,7 @@ const Header = ({ activeMenu }) => {
             <div className="flex items-center space-x-3">
                 <span className="text-gray-600">Hello,</span>
                 <span className="font-semibold capitalize">
-                    {user.firstName} {user.lastName}
+                    {user?.firstName} {user?.lastName}
                 </span>
                 <img
                     src="https://i.pravatar.cc/40"

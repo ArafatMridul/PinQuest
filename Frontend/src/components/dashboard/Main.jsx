@@ -1,3 +1,4 @@
+import Map from "../../pages/Map";
 import Header from "./Header";
 import JournalContainer from "./journal/JournalContainer";
 
@@ -8,6 +9,7 @@ const Main = ({ activeMenu }) => {
 
             <main className="flex-1">
                 {activeMenu === "Travel Journal" && <JournalContainer />}
+                {activeMenu === "Map View" && <Map />}
             </main>
         </div>
     );
