@@ -35,3 +35,28 @@ export const getJournals = async (userId) => {
 
     return result;
 };
+
+export const getJournalById = async (id) => {
+    const [result] = await db
+        .select()
+        .from(journalTable)
+        .where(eq(journalTable.id, id));
+    return result;
+};
+
+export const updateJournalEntry = async (id, updatedFields) => {
+    const result = await db
+        .update(journalTable)
+        .set(updatedFields)
+        .where(eq(journalTable.id, id))
+        .returning();
+    return result;
+};
+
+export const deleteJournalEntry = async (id, userId) => {
+    const result = await db
+        .delete(journalTable)
+        .where(eq(journalTable.id, id), eq(journalTable.userId, userId))
+        .returning();
+    return result;
+};

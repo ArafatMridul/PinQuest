@@ -1,9 +1,20 @@
 import path from "node:path";
-import { getJournals, insertIntoJourna } from "../services/journal.service.js";
+import {
+    deleteJournalEntry,
+    getJournalById,
+    getJournals,
+    insertIntoJourna,
+    updateJournalEntry,
+} from "../services/journal.service.js";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "..");
+
 export const createNewJournalEntry = async (req, res) => {
+    const placeholderImageURL = "http://localhost:8000/assets/placeholder.jpg";
     const { title, story, city, visitedLocation, visitedDate, imageURL } =
         req.body;
     const userId = req.user.id;
@@ -18,7 +29,7 @@ export const createNewJournalEntry = async (req, res) => {
         story,
         visitedLocation,
         visitedDate,
-        imageURL,
+        imageURL: imageURL || placeholderImageURL,
         city,
     });
 
@@ -40,7 +51,7 @@ export const getAllJournals = async (req, res) => {
 
     if (result.length === 0) {
         return res.status(400).json({
-            error: "something went wrong during getting all journal records",
+            error: "No journal entry found. Add journal entries to see them.",
         });
     }
 
@@ -54,10 +65,6 @@ export const imageUpload = async (req, res) => {
     const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
     return res.status(201).json({ imageUrl });
 };
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, "..");
 
 export const deleteImages = async (req, res) => {
     const { imageURL } = req.query;
@@ -79,3 +86,101 @@ export const deleteImages = async (req, res) => {
         return res.status(500).json({ error: "Error deleting file" });
     }
 };
+
+export const editJournalStory = async (req, res) => {
+    const { id } = req.params;
+    const { title, story, city, visitedLocation, visitedDate, imageURL } =
+        req.body;
+    const userId = req.user.id;
+
+    if (!title || !story || !visitedLocation || !visitedDate) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const placeholderImageURL = "http://localhost:8000/assets/placeholder.jpg";
+    const result = await updateJournalEntry(id, {
+        userId,
+        title,
+        story,
+        visitedLocation,
+        visitedDate,
+        imageURL: imageURL || placeholderImageURL,
+        city,
+    });
+
+    if (!result) {
+        return res
+            .status(400)
+            .json({ error: "something went wrong during updating" });
+    }
+
+    return res
+        .status(200)
+        .json({ message: "Story is updated successfully.", id: result.id });
+};
+
+export const deleteJournal = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+    if (!id) {
+        return res.status(400).json({ error: "Journal ID is required" });
+    }
+
+    const Journal = await getJournalById(id);
+    if (!Journal) {
+        return res.status(404).json({ error: "Journal not found" });
+    }
+
+    const imageURL = Journal.imageURL;
+    const fileName = path.basename(imageURL);
+    const filePath = path.join(rootDir, "uploads", fileName);
+    if (fs.existsSync(filePath) && !imageURL.includes("placeholder.jpg")) {
+        try {
+            await fs.promises.unlink(filePath);
+        } catch (error) {
+            console.error("Error deleting file:", error);
+        }
+    }
+
+    const result = await deleteJournalEntry(id, userId);
+
+    if (!result) {
+        return res
+            .status(400)
+            .json({ error: "something went wrong during deletion" });
+    }
+    return res
+        .status(200)
+        .json({
+            message: "Journal entry deleted successfully.",
+            id: result.id,
+        });
+};
+
+export const updateisFavourite = async (req, res) => {
+    const { id } = req.params;
+    const { isFavourite } = req.body;
+    const userId = req.user.id;
+    if (typeof isFavourite !== "boolean") {
+        return res
+            .status(400)
+            .json({ error: "isFavourite field must be a boolean" });
+    }
+    const journal = await getJournalById(id);
+    if (!journal) {
+        return res.status(404).json({ error: "Journal not found" });
+    }
+    if (journal.userId !== userId) {
+        return res.status(403).json({ error: "Unauthorized action" });
+    }
+    
+    const result = await updateJournalEntry(id, { isFavourite });
+    if (!result) {
+        return res
+            .status(400)
+            .json({ error: "something went wrong during updating isFavourite" });
+    }
+    return res
+        .status(200)
+        .json({ message: "isFavourite updated successfully.", id: result.id });
+}

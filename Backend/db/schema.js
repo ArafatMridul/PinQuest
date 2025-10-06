@@ -27,9 +27,11 @@ export const journalTable = pgTable("journal", {
     title: varchar({ length: 100 }).notNull(),
     story: text().notNull(),
     city: varchar({ length: 50 }).notNull(),
-    visitedLocation: text().array().default([]).notNull(),  
+    visitedLocation: text().array().default([]).notNull(),
     isFavourite: boolean().default(false).notNull(),
-    imageURL: text().notNull(),
+    imageURL: text()
+        .notNull()
+        .$default("http://localhost:8000/assets/placeholder.jpg"),
     visitedDate: date().notNull(),
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().$onUpdate(() => new Date()),
