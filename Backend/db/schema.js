@@ -1,4 +1,12 @@
-import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+    boolean,
+    date,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    varchar,
+} from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
     id: uuid().primaryKey().defaultRandom(),
@@ -16,8 +24,13 @@ export const journalTable = pgTable("journal", {
     userId: uuid()
         .notNull()
         .references(() => usersTable.id),
-    city: varchar({ length: 20 }).notNull(),
-    country: varchar({ length: 20 }).notNull(),
+    title: varchar({ length: 100 }).notNull(),
+    story: text().notNull(),
+    city: varchar({ length: 50 }).notNull(),
+    visitedLocation: text().array().default([]).notNull(),  
+    isFavourite: boolean().default(false).notNull(),
+    imageURL: text().notNull(),
+    visitedDate: date().notNull(),
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().$onUpdate(() => new Date()),
 });

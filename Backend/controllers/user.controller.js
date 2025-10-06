@@ -68,7 +68,6 @@ export const loginUser = async (req, res) => {
 
 // <--------- GET USER PROFILE --------->
 export const getUserProfile = async (req, res) => {
-    req.user;
     if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
     }

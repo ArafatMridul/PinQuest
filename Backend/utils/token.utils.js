@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 export function generateToken(payload) {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return jwt.sign(payload, process.env.JWT_SECRET);
 }
 
 export function verifyToken(token) {
