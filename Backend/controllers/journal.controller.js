@@ -226,3 +226,46 @@ export const searchJournals = async (req, res) => {
         return res.status(500).json({ error: "Failed to search journals" });
     }
 };
+
+export const filterTravelJournals = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { startDate, endDate } = req.body;
+        if (!startDate || !endDate) {
+            return res
+                .status(400)    
+                .json({ error: "Both startDate and endDate are required" });
+        }
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (isNaN(start) || isNaN(end)) {
+            return res
+                .status(400)
+                .json({ error: "Invalid date format. Use YYYY-MM-DD." });
+        }
+        if (start > end) {
+            return res
+                .status(400)
+                .json({ error: "startDate cannot be after endDate" });
+        }
+        const allJournals = await getJournals(userId);
+        const filteredJournals = allJournals
+            .filter((journal) => {
+                const visitedDate = new Date(journal.visitedDate);
+                return visitedDate >= start && visitedDate <= end;
+            })
+            .sort((a, b) => {
+                if (a.isFavourite === b.isFavourite) return 0;
+                return a.isFavourite ? -1 : 1;
+            });
+        if (filteredJournals.length === 0) {
+            return res
+                .status(404)
+                .json({ error: "No journal entries found in the given date range" });
+        }
+        return res.json(filteredJournals);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to filter journals" });
+    }
+};
