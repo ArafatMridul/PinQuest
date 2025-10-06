@@ -149,12 +149,10 @@ export const deleteJournal = async (req, res) => {
             .status(400)
             .json({ error: "something went wrong during deletion" });
     }
-    return res
-        .status(200)
-        .json({
-            message: "Journal entry deleted successfully.",
-            id: result.id,
-        });
+    return res.status(200).json({
+        message: "Journal entry deleted successfully.",
+        id: result.id,
+    });
 };
 
 export const updateisFavourite = async (req, res) => {
@@ -173,14 +171,58 @@ export const updateisFavourite = async (req, res) => {
     if (journal.userId !== userId) {
         return res.status(403).json({ error: "Unauthorized action" });
     }
-    
+
     const result = await updateJournalEntry(id, { isFavourite });
     if (!result) {
-        return res
-            .status(400)
-            .json({ error: "something went wrong during updating isFavourite" });
+        return res.status(400).json({
+            error: "something went wrong during updating isFavourite",
+        });
     }
     return res
         .status(200)
         .json({ message: "isFavourite updated successfully.", id: result.id });
-}
+};
+
+export const searchJournals = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { query } = req.query;
+        console.log("user ID : ", userId);
+        if (!query) {
+            return res.status(400).json({ error: "Search query is required" });
+        }
+
+        const allJournals = await getJournals(userId);
+        const q = query.toLowerCase();
+
+        const filteredJournals = allJournals
+            .filter((journal) => {
+                const inTitle = journal.title?.toLowerCase().includes(q);
+                const inStory = journal.story?.toLowerCase().includes(q);
+                const inCity = journal.city?.toLowerCase().includes(q);
+
+                const inVisited = Array.isArray(journal.visitedLocation)
+                    ? journal.visitedLocation.some((loc) =>
+                          loc.toLowerCase().includes(q)
+                      )
+                    : false;
+
+                return inTitle || inStory || inCity || inVisited;
+            })
+            .sort((a, b) => {
+                if (a.isFavourite === b.isFavourite) return 0;
+                return a.isFavourite ? -1 : 1;
+            });
+
+        if (filteredJournals.length === 0) {
+            return res
+                .status(404)
+                .json({ error: "No matching journal entries found" });
+        }
+
+        return res.json(filteredJournals);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to search journals" });
+    }
+};
