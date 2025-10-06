@@ -1,9 +1,23 @@
 import { getJournals, insertIntoJourna } from "../services/journal.service.js";
 
 export const createNewJournalEntry = async (req, res) => {
-    const { userId, city, country, description } = req.body;
+    const { title, story, city, visitedLocation, visitedDate, imageURL } =
+        req.body;
+    const userId = req.user.id;
 
-    const result = await insertIntoJourna(userId, city, country, description);
+    if (!title || !story || !visitedLocation || !visitedDate) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const result = await insertIntoJourna({
+        userId,
+        title,
+        story,
+        visitedLocation,
+        visitedDate,
+        imageURL,
+        city,
+    });
 
     if (!result) {
         return res
@@ -11,7 +25,9 @@ export const createNewJournalEntry = async (req, res) => {
             .json({ error: "something went wrong during insertion" });
     }
 
-    return res.json({ message: "Insertion successfull", id: result.id });
+    return res
+        .status(201)
+        .json({ message: "Story is added successfully.", id: result.id });
 };
 
 export const getAllJournals = async (req, res) => {
@@ -24,6 +40,12 @@ export const getAllJournals = async (req, res) => {
             error: "something went wrong during getting all journal records",
         });
     }
-    
+
     return res.json(result);
+};
+
+export const imageUpload = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+    }
 };
