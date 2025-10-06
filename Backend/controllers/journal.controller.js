@@ -1,5 +1,9 @@
 import path from "node:path";
-import { getJournals, insertIntoJourna } from "../services/journal.service.js";
+import {
+    getJournals,
+    insertIntoJourna,
+    updateJournalEntry,
+} from "../services/journal.service.js";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 
@@ -78,4 +82,36 @@ export const deleteImages = async (req, res) => {
         console.error("Error deleting file:", error);
         return res.status(500).json({ error: "Error deleting file" });
     }
+};
+
+export const editJournalStory = async (req, res) => {
+    const { id } = req.params;
+    const { title, story, city, visitedLocation, visitedDate, imageURL } =
+        req.body;
+    const userId = req.user.id;
+
+    if (!title || !story || !visitedLocation || !visitedDate) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const placeholderImageURL = "http://localhost:8000/assets/placeholder.jpg";
+    const result = await updateJournalEntry(id, {
+        userId,
+        title,
+        story,
+        visitedLocation,
+        visitedDate,
+        imageURL: imageURL || placeholderImageURL,
+        city,
+    });
+
+    if (!result) {
+        return res
+            .status(400)
+            .json({ error: "something went wrong during updating" });
+    }
+
+    return res
+        .status(200)
+        .json({ message: "Story is updated successfully.", id: result.id });
 };

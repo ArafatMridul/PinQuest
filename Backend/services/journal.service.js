@@ -35,3 +35,12 @@ export const getJournals = async (userId) => {
 
     return result;
 };
+
+export const updateJournalEntry = async (id, updatedFields) => {
+    const result = await db
+        .update(journalTable)
+        .set(updatedFields)
+        .where(eq(journalTable.id, id))
+        .returning();
+    return result;
+};
