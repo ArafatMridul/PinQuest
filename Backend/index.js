@@ -1,6 +1,8 @@
 import express from "express";
 import "dotenv/config";
 import userRouter from "./routes/users.route.js";
+import journalRouter from "./routes/journal.route.js";
+
 import cors from "cors";
 
 const app = express();
@@ -16,6 +18,7 @@ app.use(
 app.use(express.json());
 
 app.use("/users", userRouter);
+app.use("/journal", journalRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running at PORT ${PORT}`);
