@@ -1,4 +1,7 @@
+import path from "node:path";
 import { getJournals, insertIntoJourna } from "../services/journal.service.js";
+import { fileURLToPath } from "node:url";
+import fs from "node:fs";
 
 export const createNewJournalEntry = async (req, res) => {
     const { title, story, city, visitedLocation, visitedDate, imageURL } =
@@ -50,4 +53,29 @@ export const imageUpload = async (req, res) => {
     }
     const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
     return res.status(201).json({ imageUrl });
+};
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "..");
+
+export const deleteImages = async (req, res) => {
+    const { imageURL } = req.query;
+    if (!imageURL) {
+        return res.status(400).json({ error: "No image URL provided" });
+    }
+
+    try {
+        const filename = path.basename(imageURL);
+        const filePath = path.join(rootDir, "uploads", filename);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: "File not found" });
+        }
+        await fs.promises.unlink(filePath);
+        return res.json({ message: "Image deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting file:", error);
+        return res.status(500).json({ error: "Error deleting file" });
+    }
 };
