@@ -46,6 +46,8 @@ export const getAllJournals = async (req, res) => {
 
 export const imageUpload = async (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
+        return res.status(400).json({ error: "No image file uploaded" });
     }
+    const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+    return res.status(201).json({ imageUrl });
 };
