@@ -8,8 +8,10 @@ export const authMiddleware = (req, res, next) => {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ error: "Unauthorized" });
         }
-
-        const token = authHeader.split(" ")[1];
+        
+        const token = authHeader.startsWith("Bearer ")
+            ? authHeader.split(" ")[1]
+            : authHeader;
         const decode = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decode;
         next();

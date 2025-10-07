@@ -34,8 +34,41 @@ const JournalProvider = ({ children }) => {
 
         getAllJournals();
     }, [user]);
+
+    const handleToggleFavourite = async (journal) => {
+        const journalId = journal.id;
+        console.log(journalId);
+        try {
+            const token = localStorage.getItem("token");
+
+            await fetch(
+                `http://localhost:8000/journal/update-isFavorite/${journalId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ isFavourite: !journal.isFavourite }),
+                }
+            );
+
+            setJournals((prev) =>
+                prev.map((j) =>
+                    j.id === journalId
+                        ? { ...j, isFavourite: !j.isFavourite }
+                        : j
+                )
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
-        <JournalContext.Provider value={{ journals, setJournals }}>
+        <JournalContext.Provider
+            value={{ journals, setJournals, handleToggleFavourite }}
+        >
             {children}
         </JournalContext.Provider>
     );

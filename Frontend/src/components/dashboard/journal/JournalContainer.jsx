@@ -2,19 +2,15 @@ import { useJournal } from "../../../../context/journalContext";
 import TravelJournalCard from "./TravelJournalCard";
 
 const JournalContainer = () => {
-    const { journals } = useJournal();
+    const { journals, handleToggleFavourite } = useJournal();
 
     const handleViewJournal = (journal) => {
         console.log("View journal:", journal);
-    }
+    };
 
     const handleEditJournal = (journal) => {
         console.log("Edit journal:", journal);
-    }
-
-    const handleToggleFavourite = (journal) => {
-        console.log("Toggle favourite for journal:", journal);
-    }   
+    };
 
     return (
         <div>
