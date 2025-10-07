@@ -4,6 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { MdDelete, MdOutlineUpdate } from "react-icons/md";
 import DateSelector from "./DateSelector";
 import ImageSelector from "./ImageSelector";
+import TagInput from "./TagInput";
 
 const AddJournal = ({ journal, type, onClose }) => {
     const [visitedDate, setVisitedDate] = useState(null);
@@ -97,8 +98,13 @@ const AddJournal = ({ journal, type, onClose }) => {
                         ></textarea>
                     </div>
                     <div className="pt-3">
-                        <label className="text-xs text-slate-400 font-bold uppercase">visited locations</label>
-                        
+                        <label className="text-xs text-slate-400 font-bold uppercase">
+                            visited locations
+                        </label>
+                        <TagInput
+                            tags={visitedLocation}
+                            setTags={setVisitedLocation}
+                        />
                     </div>
                 </div>
             </div>
