@@ -13,12 +13,16 @@ import { useUser } from "../../../../context/userContext";
 const AddJournal = ({ journal, type, onClose }) => {
     const { user } = useUser();
     const { setJournals } = useJournal();
-    const [visitedDate, setVisitedDate] = useState(null);
-    const [title, setTitle] = useState("");
-    const [story, setStory] = useState("");
-    const [storyImage, setStoryImage] = useState(null);
-    const [city, setCity] = useState("");
-    const [visitedLocation, setVisitedLocation] = useState([]);
+    const [visitedDate, setVisitedDate] = useState(
+        journal?.visitedDate || null
+    );
+    const [title, setTitle] = useState(journal?.title || "");
+    const [story, setStory] = useState(journal?.story || "");
+    const [storyImage, setStoryImage] = useState(journal?.imageURL || null);
+    const [city, setCity] = useState(journal?.city || "");
+    const [visitedLocation, setVisitedLocation] = useState(
+        journal?.visitedLocation || []
+    );
     const [error, setError] = useState("");
 
     const addNewTravelJournal = async () => {
@@ -54,7 +58,6 @@ const AddJournal = ({ journal, type, onClose }) => {
                 body: JSON.stringify(journalData),
             });
 
-            // ✅ Parse backend response
             console.log(response);
             const data = await response.json();
 
@@ -76,7 +79,67 @@ const AddJournal = ({ journal, type, onClose }) => {
         }
     };
 
-    const updateTravelJournal = async () => {};
+    const updateTravelJournal = async () => {
+        try {
+            let imageUrl = null;
+
+            if (storyImage) {
+                if (storyImage !== journal?.imageURL) {
+                    const imageUploadRes = await uploadImage(storyImage);
+                    imageUrl =
+                        imageUploadRes?.imageUrl ||
+                        imageUploadRes?.imageURL ||
+                        "http://localhost:8000/assets/placeholder.jpg";
+                } else {
+                    imageUrl = storyImage;
+                }
+            } else {
+                imageUrl = "http://localhost:8000/assets/placeholder.jpg";
+            }
+
+            const journalData = {
+                title,
+                story,
+                visitedDate: visitedDate
+                    ? moment(visitedDate).format("YYYY-MM-DD")
+                    : moment().format("YYYY-MM-DD"),
+                city,
+                imageURL: imageUrl,
+                visitedLocation,
+            };
+
+            const response = await fetch(
+                `http://localhost:8000/journal/edit-story/${journal.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                    body: JSON.stringify(journalData),
+                }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setJournals((prev) =>
+                    prev.map((j) =>
+                        j.id === journal.id ? { ...j, ...journalData } : j
+                    )
+                );
+                setStoryImage(imageUrl);
+                onClose();
+            } else {
+                setError(data.message || "Failed to update journal.");
+            }
+        } catch (error) {
+            console.log(error);
+            setError("Failed to update journal.");
+        }
+    };
 
     const handleAddOrUpdateJournal = () => {
         if (!title || !story || !visitedDate) {
@@ -90,13 +153,56 @@ const AddJournal = ({ journal, type, onClose }) => {
         }
     };
 
-    const handleDeleteStoryImage = () => {};
+    const handleDeleteStoryImage = async () => {
+        try {
+            const deleteImageResponse = await fetch(
+                `http://localhost:8000/journal/delete-images?imageURL=${encodeURIComponent(
+                    journal.imageURL
+                )}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+
+            const data = await deleteImageResponse.json();
+
+            if (deleteImageResponse.ok) {
+                console.log("Image deleted successfully:", data);
+
+                setStoryImage(null);
+
+                // set placeholder in UI immediately
+                setJournals((prev) =>
+                    prev.map((j) =>
+                        j.id === journal.id
+                            ? {
+                                  ...j,
+                                  imageURL:
+                                      "http://localhost:8000/assets/placeholder.jpg",
+                              }
+                            : j
+                    )
+                );
+
+            } else {
+                setError(data.message || "Failed to delete image.");
+            }
+        } catch (error) {
+            console.log(error);
+            setError("Failed to delete image.");
+        }
+    };
 
     return (
         <div>
             <div className="flex items-center justify-between">
                 <h5 className="text-sm sm:text-xl font-extrabold text-slate-700">
-                    {type === "add" ? "Add New Journal" : "Edit Journal"}
+                    {type === "add" ? "Add New Journal" : "Update Journal"}
                 </h5>
                 <div>
                     <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">

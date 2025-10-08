@@ -23,7 +23,12 @@ const JournalContainer = () => {
     };
 
     const handleEditJournal = (journal) => {
-        console.log("Edit journal:", journal);
+        setAddModalOpen((prev) => ({
+            ...prev,
+            isShow: true,
+            type: "edit",
+            journal,
+        }));
     };
 
     return (
@@ -91,7 +96,17 @@ const JournalContainer = () => {
                         }
                     />
                 ) : (
-                    <div>Edit Journal Modal</div>
+                    <AddJournal
+                        journal={addModalOpen.journal}
+                        type={addModalOpen.type}
+                        onClose={() =>
+                            setAddModalOpen({
+                                isShow: false,
+                                type: "edit",
+                                journal: null,
+                            })
+                        }
+                    />
                 )}
             </Modal>
 
@@ -117,7 +132,13 @@ const JournalContainer = () => {
                             isShow: false,
                         }));
                     }}
-                    onEditClick={() => {}}
+                    onEditClick={() => {
+                        setOpenViewModal((prev) => ({
+                            ...prev,
+                            isShow: false,
+                        }));
+                        handleEditJournal(openViewModal.data);
+                    }}
                     onDeleteClick={() => {}}
                     journal={openViewModal.data}
                 ></ViewJournal>
