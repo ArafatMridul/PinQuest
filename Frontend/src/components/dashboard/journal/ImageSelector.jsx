@@ -48,11 +48,12 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
                 accept="image/*"
                 ref={inputRef}
                 className="border border-dashed border-slate-300 rounded-lg p-3 w-full cursor-pointer text-sm text-slate-400 font-medium hover:bg-slate-100 transition-all duration-300 ease-in-out"
+                hidden
                 onChange={handleImageChange}
             />
             {!image ? (
                 <button
-                    className="w-full h-[220px] flex flex-col items-center justify-center gap-4 bg-slate-50 rounded-md border border-slate-200/50"
+                    className="w-full h-[220px] flex flex-col items-center justify-center gap-4 bg-slate-50 rounded-md border-2 border-dashed border-slate-200/50"
                     onClick={() => {
                         onChooseFile();
                     }}

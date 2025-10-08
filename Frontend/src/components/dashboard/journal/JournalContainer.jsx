@@ -4,6 +4,7 @@ import TravelJournalCard from "./TravelJournalCard";
 import { useState } from "react";
 import Modal from "react-modal";
 import AddJournal from "./AddJournal";
+import ViewJournal from "./ViewJournal";
 
 const JournalContainer = () => {
     const { journals, handleToggleFavourite } = useJournal();
@@ -12,9 +13,13 @@ const JournalContainer = () => {
         type: "add",
         journal: null,
     });
+    const [openViewModal, setOpenViewModal] = useState({
+        isShow: false,
+        data: null,
+    });
 
     const handleViewJournal = (journal) => {
-        console.log("View journal:", journal);
+        setOpenViewModal({ isShow: true, data: journal });
     };
 
     const handleEditJournal = (journal) => {
@@ -66,13 +71,12 @@ const JournalContainer = () => {
                         backgroundColor: "rgba(0, 0, 0, 0.2)",
                         zIndex: 1000,
                         backdropFilter: "blur(4px)",
-                        display: "flex",
                         paddingTop: "10vh",
-                        justifyContent: "center",
+                        paddingInline: "12px",
                     },
                 }}
                 appElement={document.getElementById("root")}
-                className="w-[80vw] md:w-[40%] h-[80vh] bg-white rounded-sm mx-auto p-5 overflow-y-scroll scrollbar z-50"
+                className="sm:max-w-[80vw] lg:max-w-[1000px] h-[80vh] bg-white rounded-sm mx-auto p-3 sm:p-5 overflow-y-scroll scrollbar z-50"
             >
                 {addModalOpen.type === "add" ? (
                     <AddJournal
@@ -89,6 +93,34 @@ const JournalContainer = () => {
                 ) : (
                     <div>Edit Journal Modal</div>
                 )}
+            </Modal>
+
+            <Modal
+                isOpen={openViewModal.isShow}
+                onRequestClose={() => {}}
+                style={{
+                    overlay: {
+                        backgroundColor: "rgba(0, 0, 0, 0.2)",
+                        zIndex: 1000,
+                        backdropFilter: "blur(4px)",
+                        paddingTop: "10vh",
+                        paddingInline: "12px",
+                    },
+                }}
+                appElement={document.getElementById("root")}
+                className="sm:max-w-[80vw] lg:max-w-[1000px] h-[80vh] bg-white rounded-sm mx-auto p-5 overflow-y-scroll scrollbar z-50"
+            >
+                <ViewJournal
+                    onClose={() => {
+                        setOpenViewModal((prev) => ({
+                            ...prev,
+                            isShow: false,
+                        }));
+                    }}
+                    onEditClick={() => {}}
+                    onDeleteClick={() => {}}
+                    journal={openViewModal.data}
+                ></ViewJournal>
             </Modal>
 
             <button

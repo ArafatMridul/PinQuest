@@ -52,7 +52,7 @@ const TagInput = ({ tags, setTags }) => {
                     value={inputValue}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    className="text-sm bg-transparent border border-slate-200 px-3 py-2 rounded-sm outline-none font-semibold"
+                    className="text-sm bg-transparent border-2 border-dashed border-slate-200 px-3 py-2 rounded-sm outline-none font-semibold"
                     placeholder="Add locations.."
                 />
                 <button className="w-8 h-8 flex items-center justify-center rounded-sm border border-cyan-500 hover:bg-cyan-500 transition-all duration-300 ease-in-out cursor-pointer">

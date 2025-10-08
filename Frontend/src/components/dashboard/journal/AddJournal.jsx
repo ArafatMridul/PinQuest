@@ -61,7 +61,7 @@ const AddJournal = ({ journal, type, onClose }) => {
             if (response.ok) {
                 console.log("Journal added successfully:", data);
                 setJournals((prev) => [
-                    ...prev,
+                    ...(Array.isArray(prev) ? prev : []),
                     { ...data, userId: user.id, ...journalData },
                 ]);
                 setStoryImage(imageUrl);
@@ -95,39 +95,39 @@ const AddJournal = ({ journal, type, onClose }) => {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <h5 className="text-xl font-extrabold text-slate-700">
+                <h5 className="text-sm sm:text-xl font-extrabold text-slate-700">
                     {type === "add" ? "Add New Journal" : "Edit Journal"}
                 </h5>
                 <div>
                     <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
                         {type === "add" ? (
-                            <>
+                            <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
                                 <button
-                                    className="flex items-center gap-1 text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer"
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
                                     onClick={handleAddOrUpdateJournal}
                                 >
                                     <FaPlus />
                                     Add Journal
                                 </button>
-                                <button className="flex items-center gap-1 text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer">
+                                <button className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-2 md:px-4 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full">
                                     <MdDelete />
                                     Delete Journal
                                 </button>
-                            </>
+                            </div>
                         ) : (
-                            <>
+                            <div>
                                 <button
-                                    className="flex items-center gap-1 text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer"
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
                                     onClick={handleAddOrUpdateJournal}
                                 >
                                     <MdOutlineUpdate />
                                     Update Journal
                                 </button>
-                                <button className="flex items-center gap-1 text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer">
+                                <button className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-2 md:px-4 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full">
                                     <MdDelete />
                                     Delete Journal
                                 </button>
-                            </>
+                            </div>
                         )}
                         <button className="" onClick={onClose}>
                             <IoClose className="text-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-400/20 rounded-full" />
@@ -142,7 +142,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                     </label>
                     <input
                         type="text"
-                        className="text-2xl text-slate-900 font-semibold outline-none"
+                        className="text-2xl text-slate-900 font-semibold outline-1 outline-dashed outline-slate-200 rounded-md px-3 py-2"
                         placeholder="Once upon a time..."
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -166,13 +166,13 @@ const AddJournal = ({ journal, type, onClose }) => {
                         </label>
                         <textarea
                             rows={10}
-                            className="w-full text-slate-900 bg-slate-100 font-semibold outline-none p-3 border border-slate-200 rounded-lg focus:border-slate-300 transition-all duration-300 ease-in-out resize-none"
+                            className="w-full text-slate-900 bg-slate-100 font-semibold outline-none p-3 border-2 border-dashed border-slate-200 rounded-lg focus:border-slate-300 transition-all duration-300 ease-in-out resize-none"
                             placeholder="Write your story here..."
                             value={story}
                             onChange={(e) => setStory(e.target.value)}
                         ></textarea>
                     </div>
-                    <div>
+                    <div className="flex flex-col">
                         <label className="text-xs text-slate-400 font-bold uppercase">
                             city
                         </label>
@@ -180,7 +180,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                             type="text"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            className="text-2xl text-slate-900 font-semibold outline-none"
+                            className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
                         />
                     </div>
                     <div className="pt-3">
