@@ -53,9 +53,16 @@ const Map = () => {
         }
     }, [journals]);
 
-    console.log(locations);
     if (locations.length === 0) {
-        return <p>Loading map....</p>;
+        return (
+            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 font-bold text-center">
+                <p>Loading map...</p>
+                <p>
+                    If this takes too long, check if any journal is added, if
+                    not add first to see them appear in the map.
+                </p>
+            </div>
+        );
     }
 
     return <div>{<MapView locations={locations} />}</div>;

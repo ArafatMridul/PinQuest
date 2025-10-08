@@ -20,6 +20,7 @@ const AddJournal = ({ journal, type, onClose }) => {
     const [story, setStory] = useState(journal?.story || "");
     const [storyImage, setStoryImage] = useState(journal?.imageURL || null);
     const [city, setCity] = useState(journal?.city || "");
+    const [country, setCountry] = useState(journal?.country || "");
     const [visitedLocation, setVisitedLocation] = useState(
         journal?.visitedLocation || []
     );
@@ -44,10 +45,10 @@ const AddJournal = ({ journal, type, onClose }) => {
                     ? moment(visitedDate).format("YYYY-MM-DD")
                     : moment().format("YYYY-MM-DD"),
                 city,
+                country,
                 imageURL: imageUrl,
                 visitedLocation,
             };
-            console.log(journalData);
 
             const response = await fetch("http://localhost:8000/journal/", {
                 method: "POST",
@@ -104,6 +105,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                     ? moment(visitedDate).format("YYYY-MM-DD")
                     : moment().format("YYYY-MM-DD"),
                 city,
+                country,
                 imageURL: imageUrl,
                 visitedLocation,
             };
@@ -188,7 +190,6 @@ const AddJournal = ({ journal, type, onClose }) => {
                             : j
                     )
                 );
-
             } else {
                 setError(data.message || "Failed to delete image.");
             }
@@ -278,16 +279,29 @@ const AddJournal = ({ journal, type, onClose }) => {
                             onChange={(e) => setStory(e.target.value)}
                         ></textarea>
                     </div>
-                    <div className="flex flex-col">
-                        <label className="text-xs text-slate-400 font-bold uppercase">
-                            city
-                        </label>
-                        <input
-                            type="text"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
-                        />
+                    <div className="flex items-center gap-6">
+                        <div className="flex flex-col">
+                            <label className="text-xs text-slate-400 font-bold uppercase">
+                                city
+                            </label>
+                            <input
+                                type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
+                            />
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-xs text-slate-400 font-bold uppercase">
+                                country
+                            </label>
+                            <input
+                                type="text"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
+                            />
+                        </div>
                     </div>
                     <div className="pt-3">
                         <label className="text-xs text-slate-400 font-bold uppercase">

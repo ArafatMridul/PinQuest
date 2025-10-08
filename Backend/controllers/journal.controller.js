@@ -15,11 +15,18 @@ const rootDir = path.resolve(__dirname, "..");
 
 export const createNewJournalEntry = async (req, res) => {
     const placeholderImageURL = "http://localhost:8000/assets/placeholder.jpg";
-    const { title, story, city, visitedLocation, visitedDate, imageURL } =
-        req.body;
+    const {
+        title,
+        story,
+        city,
+        country,
+        visitedLocation,
+        visitedDate,
+        imageURL,
+    } = req.body;
     const userId = req.user.id;
 
-    if (!title || !story || !visitedLocation || !visitedDate) {
+    if (!title || !story || !visitedLocation || !visitedDate || !country) {
         return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -31,6 +38,7 @@ export const createNewJournalEntry = async (req, res) => {
         visitedDate,
         imageURL: imageURL || placeholderImageURL,
         city,
+        country,
     });
 
     if (!result) {
@@ -233,7 +241,7 @@ export const filterTravelJournals = async (req, res) => {
         const { startDate, endDate } = req.body;
         if (!startDate || !endDate) {
             return res
-                .status(400)    
+                .status(400)
                 .json({ error: "Both startDate and endDate are required" });
         }
         const start = new Date(startDate);
@@ -261,7 +269,9 @@ export const filterTravelJournals = async (req, res) => {
         if (filteredJournals.length === 0) {
             return res
                 .status(404)
-                .json({ error: "No journal entries found in the given date range" });
+                .json({
+                    error: "No journal entries found in the given date range",
+                });
         }
         return res.json(filteredJournals);
     } catch (err) {

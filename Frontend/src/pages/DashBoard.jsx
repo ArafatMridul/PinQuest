@@ -29,13 +29,13 @@ export default function DashBoard() {
 
     return (
         <div className="min-h-screen flex bg-gray-100">
-            {/* <div className="w-64">
+            <div className="w-64">
                 <Asidebar
                     menuItems={menuItems}
                     setActiveMenu={setActiveMenu}
                     activeMenu={activeMenu}
                 />
-            </div> */}
+            </div>
             <Main activeMenu={activeMenu} />
         </div>
     );

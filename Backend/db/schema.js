@@ -27,6 +27,7 @@ export const journalTable = pgTable("journal", {
     title: varchar({ length: 100 }).notNull(),
     story: text().notNull(),
     city: varchar({ length: 50 }).notNull(),
+    country: varchar({ length: 50 }).notNull(),
     visitedLocation: text().array().default([]).notNull(),
     isFavourite: boolean().default(false).notNull(),
     imageURL: text()

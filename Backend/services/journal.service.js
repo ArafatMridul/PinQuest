@@ -10,6 +10,7 @@ export const insertIntoJourna = async ({
     visitedDate,
     imageURL,
     city,
+    country,
 }) => {
     const [result] = await db
         .insert(journalTable)
@@ -21,6 +22,7 @@ export const insertIntoJourna = async ({
             visitedDate,
             imageURL,
             city,
+            country,
         })
         .returning({ id: journalTable.id });
 

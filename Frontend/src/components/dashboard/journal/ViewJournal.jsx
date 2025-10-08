@@ -17,7 +17,10 @@ const ViewJournal = ({ journal, onClose, onEditClick, onDeleteClick }) => {
                             <MdOutlineUpdate className="text-lg" />
                             Update Journal
                         </button>
-                        <button className="flex items-center gap-1 text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer">
+                        <button
+                            className="flex items-center gap-1 text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer"
+                            onClick={onDeleteClick}
+                        >
                             <MdOutlineDelete className="text-lg" />
                             Delete Journal
                         </button>
@@ -57,7 +60,9 @@ const ViewJournal = ({ journal, onClose, onEditClick, onDeleteClick }) => {
                     className="w-full h-300px object-cover rounded-lg"
                 />
                 <div className="mt-4">
-                    <p className="text-sm text-slate-950 leading-6 text-justify whitespace-pre-line">{journal.story}</p>
+                    <p className="text-sm text-slate-950 leading-6 text-justify whitespace-pre-line">
+                        {journal?.story}
+                    </p>
                 </div>
             </div>
         </div>

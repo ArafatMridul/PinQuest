@@ -25,7 +25,6 @@ const JournalProvider = ({ children }) => {
                     }
                 );
                 const data = await response.json();
-                console.log("Journals:", data);
                 setJournals(data);
             } catch (error) {
                 console.log(error);

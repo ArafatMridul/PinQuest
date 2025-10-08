@@ -5,9 +5,10 @@ import { useState } from "react";
 import Modal from "react-modal";
 import AddJournal from "./AddJournal";
 import ViewJournal from "./ViewJournal";
+import EmptyCard from "./EmptyCard";
 
 const JournalContainer = () => {
-    const { journals, handleToggleFavourite } = useJournal();
+    const { journals, handleToggleFavourite, setJournals } = useJournal();
     const [addModalOpen, setAddModalOpen] = useState({
         isShow: false,
         type: "add",
@@ -31,17 +32,59 @@ const JournalContainer = () => {
         }));
     };
 
+    const deleteJournal = async (journal) => {
+        console.log(journal);
+        try {
+            const response = await fetch(
+                `http://localhost:8000/journal/delete-journal/${journal.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                // ✅ remove from UI
+                setJournals((prev) => prev.filter((j) => j.id !== journal.id));
+
+                // ✅ close the modal
+                setOpenViewModal({ isShow: false, data: null });
+            } else {
+                console.error("Delete failed:", data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
-        <div>
+        <div className="p-8">
             <div className="flex gap-7">
                 <div className="flex-1">
-                    {journals.length === 0 ? (
+                    {!Array.isArray(journals) ? (
                         <div>
-                            <p>No journals available</p>
+                            <EmptyCard
+                                imgSrc={
+                                    "https://images.pexels.com/photos/5706021/pexels-photo-5706021.jpeg?auto=compress&cs=tinysrgb&w=600"
+                                }
+                                message={`Begin your journey by sharing unforgettable travel stories! Click 'Add' to capture your thoughts, experiences and adventures. Start Now!`}
+                                setAddModalOpen={() =>
+                                    setAddModalOpen({
+                                        isShow: true,
+                                        type: "add",
+                                        data: null,
+                                    })
+                                }
+                            />
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
-                            {Array.isArray(journals) && journals.length > 0 ? (
+                            {Array.isArray(journals) &&
                                 journals.map((journal) => (
                                     <TravelJournalCard
                                         key={journal.id}
@@ -56,12 +99,7 @@ const JournalContainer = () => {
                                             handleToggleFavourite(journal)
                                         }
                                     />
-                                ))
-                            ) : (
-                                <p className="text-slate-500 col-span-2 text-center">
-                                    No journals found. Add one to get started!
-                                </p>
-                            )}
+                                ))}
                         </div>
                     )}
                 </div>
@@ -139,7 +177,9 @@ const JournalContainer = () => {
                         }));
                         handleEditJournal(openViewModal.data);
                     }}
-                    onDeleteClick={() => {}}
+                    onDeleteClick={async () => {
+                        await deleteJournal(openViewModal.data || null);
+                    }}
                     journal={openViewModal.data}
                 ></ViewJournal>
             </Modal>

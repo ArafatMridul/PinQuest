@@ -152,9 +152,9 @@ const MapView = ({ locations }) => {
                                 style={{ zIndex: 0 }}
                             />
                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-blue-600 font-medium">
+                            <div className="absolute top-1/3 left-20 lg:left-1/2 lg:-translate-x-1/2 flex items-center justify-center text-blue-600 gap-3 font-medium mx-auto">
                                 <Map className="w-24 h-24 text-blue-300 mx-auto mb-4" />
-                                <p>
+                                <p className="w-[25ch]">
                                     Click "Show Map" to view interactive Leaflet
                                     map
                                 </p>
