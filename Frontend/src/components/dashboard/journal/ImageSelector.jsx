@@ -30,17 +30,16 @@ const ImageSelector = ({ image, setImage, handleDeleteImage }) => {
     useEffect(() => {
         if (typeof image === "string") {
             setPreviewURL(image);
-        } else if (image) {
-            setPreviewURL(URL.createObjectURL(image));
+            return;
+        }
+        if (image) {
+            const objectURL = URL.createObjectURL(image);
+            setPreviewURL(objectURL);
+            return () => URL.revokeObjectURL(objectURL);
         } else {
             setPreviewURL(null);
         }
-        return () => {
-            if (previewURL && typeof image !== "string") {
-                URL.revokeObjectURL(previewURL);
-            }
-        };
-    }, [image, previewURL]);
+    }, [image]);
 
     return (
         <div>

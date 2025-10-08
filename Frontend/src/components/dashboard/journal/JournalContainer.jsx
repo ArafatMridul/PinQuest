@@ -31,17 +31,27 @@ const JournalContainer = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
-                            {journals.map((journal) => (
-                                <TravelJournalCard
-                                    key={journal.id}
-                                    journal={journal}
-                                    onClick={() => handleViewJournal(journal)}
-                                    onEdit={() => handleEditJournal(journal)}
-                                    onFavouriteToggle={() =>
-                                        handleToggleFavourite(journal)
-                                    }
-                                />
-                            ))}
+                            {Array.isArray(journals) && journals.length > 0 ? (
+                                journals.map((journal) => (
+                                    <TravelJournalCard
+                                        key={journal.id}
+                                        journal={journal}
+                                        onClick={() =>
+                                            handleViewJournal(journal)
+                                        }
+                                        onEdit={() =>
+                                            handleEditJournal(journal)
+                                        }
+                                        onFavouriteToggle={() =>
+                                            handleToggleFavourite(journal)
+                                        }
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-slate-500 col-span-2 text-center">
+                                    No journals found. Add one to get started!
+                                </p>
+                            )}
                         </div>
                     )}
                 </div>

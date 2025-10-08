@@ -5,15 +5,90 @@ import { MdDelete, MdOutlineUpdate } from "react-icons/md";
 import DateSelector from "./DateSelector";
 import ImageSelector from "./ImageSelector";
 import TagInput from "./TagInput";
+import moment from "moment";
+import { uploadImage } from "../../../../utils/UploadImage.utils";
+import { useJournal } from "../../../../context/journalContext";
+import { useUser } from "../../../../context/userContext";
 
 const AddJournal = ({ journal, type, onClose }) => {
+    const { user } = useUser();
+    const { setJournals } = useJournal();
     const [visitedDate, setVisitedDate] = useState(null);
     const [title, setTitle] = useState("");
     const [story, setStory] = useState("");
     const [storyImage, setStoryImage] = useState(null);
+    const [city, setCity] = useState("");
     const [visitedLocation, setVisitedLocation] = useState([]);
+    const [error, setError] = useState("");
 
-    const handleAddOrUpdateJournal = () => {};
+    const addNewTravelJournal = async () => {
+        try {
+            let imageUrl = "http://localhost:8000/assets/placeholder.jpg";
+
+            if (storyImage) {
+                const imageUploadRes = await uploadImage(storyImage);
+                imageUrl =
+                    imageUploadRes?.imageUrl ||
+                    imageUploadRes?.imageURL ||
+                    imageUrl;
+            }
+
+            const journalData = {
+                title,
+                story,
+                visitedDate: visitedDate
+                    ? moment(visitedDate).format("YYYY-MM-DD")
+                    : moment().format("YYYY-MM-DD"),
+                city,
+                imageURL: imageUrl,
+                visitedLocation,
+            };
+            console.log(journalData);
+
+            const response = await fetch("http://localhost:8000/journal/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(journalData),
+            });
+
+            // ✅ Parse backend response
+            console.log(response);
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Journal added successfully:", data);
+                setJournals((prev) => [
+                    ...prev,
+                    { ...data, userId: user.id, ...journalData },
+                ]);
+                setStoryImage(imageUrl);
+                onClose();
+            } else {
+                console.error("Add journal failed:", data); // ✅ log entire error response
+                setError(data.message || "Failed to add journal.");
+            }
+        } catch (error) {
+            console.error("Error adding journal:", error);
+            setError("Failed to add journal.");
+        }
+    };
+
+    const updateTravelJournal = async () => {};
+
+    const handleAddOrUpdateJournal = () => {
+        if (!title || !story || !visitedDate) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+        if (type === "add") {
+            addNewTravelJournal();
+        } else {
+            updateTravelJournal();
+        }
+    };
 
     const handleDeleteStoryImage = () => {};
 
@@ -43,7 +118,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                             <>
                                 <button
                                     className="flex items-center gap-1 text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer"
-                                    onClick={AddOrUpdateJournal}
+                                    onClick={handleAddOrUpdateJournal}
                                 >
                                     <MdOutlineUpdate />
                                     Update Journal
@@ -96,6 +171,17 @@ const AddJournal = ({ journal, type, onClose }) => {
                             value={story}
                             onChange={(e) => setStory(e.target.value)}
                         ></textarea>
+                    </div>
+                    <div>
+                        <label className="text-xs text-slate-400 font-bold uppercase">
+                            city
+                        </label>
+                        <input
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            className="text-2xl text-slate-900 font-semibold outline-none"
+                        />
                     </div>
                     <div className="pt-3">
                         <label className="text-xs text-slate-400 font-bold uppercase">

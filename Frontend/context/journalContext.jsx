@@ -15,7 +15,7 @@ const JournalProvider = ({ children }) => {
                 const token = localStorage.getItem("token");
 
                 const response = await fetch(
-                    `http://localhost:8000/journal/${user.id}`, // safe now
+                    `http://localhost:8000/journal/${user.id}`,
                     {
                         method: "GET",
                         headers: {
