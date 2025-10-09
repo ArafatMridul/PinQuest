@@ -6,6 +6,8 @@ const JournalContext = createContext();
 const JournalProvider = ({ children }) => {
     const { user } = useUser();
     const [journals, setJournals] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredJournal, setFilteredJournal] = useState([]);
 
     useEffect(() => {
         if (!user) return;
@@ -36,7 +38,6 @@ const JournalProvider = ({ children }) => {
 
     const handleToggleFavourite = async (journal) => {
         const journalId = journal.id;
-        console.log(journalId);
         try {
             const token = localStorage.getItem("token");
 
@@ -64,9 +65,37 @@ const JournalProvider = ({ children }) => {
         }
     };
 
+    const onSearchJournal = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:8000/journal/search?query=${searchQuery}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+            const data = await response.json();
+            setFilteredJournal(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <JournalContext.Provider
-            value={{ journals, setJournals, handleToggleFavourite }}
+            value={{
+                journals,
+                setJournals,
+                handleToggleFavourite,
+                searchQuery,
+                setSearchQuery,
+                onSearchJournal,
+                filteredJournal,
+                setFilteredJournal,
+            }}
         >
             {children}
         </JournalContext.Provider>

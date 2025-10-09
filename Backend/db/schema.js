@@ -37,3 +37,15 @@ export const journalTable = pgTable("journal", {
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().$onUpdate(() => new Date()),
 });
+
+export const userInfoTable = pgTable("userInfo", {
+    id: uuid().primaryKey().defaultRandom(),
+    userId: uuid()
+        .notNull()
+        .references(() => usersTable.id),
+    dob: date(),
+    nationality: varchar({ length: 100 }),
+    address: text(),
+    phoneNo: varchar({ length: 15 }),
+    gender: varchar({ length: 10 }),
+});

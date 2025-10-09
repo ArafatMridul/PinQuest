@@ -9,6 +9,7 @@ import {
 
 import Asidebar from "../components/dashboard/Asidebar";
 import Main from "../components/dashboard/Main";
+import { Link, useNavigate } from "react-router-dom";
 
 const menuItems = [
     {
@@ -26,6 +27,24 @@ const menuItems = [
 
 export default function DashBoard() {
     const [activeMenu, setActiveMenu] = useState("Travel Journal");
+    const token = localStorage.getItem("token");
+    const navivate = useNavigate();
+
+    if (!token) {
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-lg">
+                <div className="bg-white max-w-[450px] px-6 py-12 rounded-2xl">
+                    <p className="">Login first to access dashboard.</p>
+                    <div
+                        className="text-center px-8 py-2 text-white bg-black outline-1 font-bold rounded-full cursor-pointer hover:bg-white hover:text-black transition-all duration-300 ease-in-out w-fit mx-auto mt-4"
+                        onClick={() => navivate("/login")}
+                    >
+                        <p>Login</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex bg-gray-100">
@@ -36,7 +55,9 @@ export default function DashBoard() {
                     activeMenu={activeMenu}
                 />
             </div>
-            <Main activeMenu={activeMenu} />
+            <div className="flex-1 relative">
+                <Main activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+            </div>
         </div>
     );
 }

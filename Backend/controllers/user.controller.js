@@ -3,7 +3,12 @@ import {
     userLoginSchema,
     userSignupSchema,
 } from "../validations/user.validation.js";
-import { createUser, getUserByEmail } from "../services/user.service.js";
+import {
+    createUser,
+    getProfile,
+    getUserByEmail,
+    setProfile,
+} from "../services/user.service.js";
 import { generateToken } from "../utils/token.utils.js";
 
 // <--------- SINGUP NEW USER --------->
@@ -75,5 +80,45 @@ export const getUserProfile = async (req, res) => {
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json({ user });
+    return res.status(200).json({ user });
+};
+
+export const getProfileInfoInDashboard = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await getUserByEmail(req.user.email);
+    const profile = await getProfile(req.user.id);
+
+    if (!user || !profile) {
+        return res.status(404).json({ error: "User/Details not found" });
+    }
+
+    return res.json({ ...user, ...profile });
+};
+
+export const setOrEditProfileInfoInDashboard = async (req, res) => {
+    const userId = req.user.id;
+    const { dob, nationality, address, phoneNo, gender } = req.body;
+
+    const result = await setProfile({
+        address,
+        dob,
+        gender,
+        nationality,
+        phoneNo,
+        userId,
+    });
+
+    if (!result) {
+        return res
+            .status(400)
+            .json({ error: "failed to edit/inset profile information." });
+    }
+
+    return res.json({
+        message:
+            "Successfully edit/insertion of user deatils from profile dashboard.",
+        id: result.id,
+    });
 };

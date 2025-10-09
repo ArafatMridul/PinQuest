@@ -109,8 +109,8 @@ const MapView = ({ locations }) => {
     };
 
     return (
-        <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-            <div className="h-9/10 mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative w-full pt-25 h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+            <div className="h-full mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center justify-between">
                     <div>
@@ -142,9 +142,7 @@ const MapView = ({ locations }) => {
 
                 <div className="flex flex-col lg:flex-row h-full">
                     {/* Map */}
-                    <div
-                        className="flex-1 relative bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden"
-                    >
+                    <div className="flex-1 relative bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
                         {showRealMap ? (
                             <div
                                 ref={mapRef}
@@ -152,20 +150,20 @@ const MapView = ({ locations }) => {
                                 style={{ zIndex: 0 }}
                             />
                         ) : (
-                            <div className="absolute top-1/3 left-20 lg:left-1/2 lg:-translate-x-1/2 flex items-center justify-center text-blue-600 gap-3 font-medium mx-auto">
-                                <Map className="w-24 h-24 text-blue-300 mx-auto mb-4" />
-                                <p className="w-[25ch]">
-                                    Click "Show Map" to view interactive Leaflet
-                                    map
-                                </p>
+                            <div className="absolute top-1/3 left-20 lg:left-1/2 lg:-translate-x-1/2 flex items-center justify-center text-blue-600 gap-3 font-medium mx-auto text-center">
+                                <div>
+                                    <Map className="w-24 h-24 text-blue-300 mx-auto mb-4" />
+                                    <p className="w-[25ch]">
+                                        Click "Show Map" to view interactive
+                                        Leaflet map
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
 
                     {/* Sidebar */}
-                    <div
-                        className="lg:w-80 bg-gray-50 p-6 overflow-y-auto h-full"
-                    >
+                    <div className="lg:w-80 bg-gray-50 p-6 overflow-y-auto h-full">
                         <h2 className="text-xl font-bold text-gray-800 mb-4">
                             Locations ({locations.length})
                         </h2>

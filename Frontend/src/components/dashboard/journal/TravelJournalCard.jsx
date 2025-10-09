@@ -71,7 +71,7 @@ const TravelJournalCard = ({ journal, onEdit, onClick, onFavouriteToggle }) => {
                 <p className="text-sm text-slate-800 mt-2">
                     {story?.slice(0, 60)}
                 </p>
-                <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-1 w-max">
+                <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-2 font-bold">
                     <FaLocationDot className="text-lg text-cyan-700" />
                     <p className="pl-2">
                         {city},&nbsp;
