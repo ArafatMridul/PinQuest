@@ -48,7 +48,7 @@ export default function DashBoard() {
 
     return (
         <div className="min-h-screen flex bg-gray-100">
-            <div className="w-64">
+            <div className="w-18 lg:w-64">
                 <Asidebar
                     menuItems={menuItems}
                     setActiveMenu={setActiveMenu}

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const SuccessMessage = ({ show, message, onClose }) => {
+const SuccessMessage = ({ show, message, onClose, type = undefined }) => {
     useEffect(() => {
         if (show) {
             const timer = setTimeout(() => {
@@ -21,23 +21,14 @@ const SuccessMessage = ({ show, message, onClose }) => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="fixed top-4 right-4 bg-green-400 text-white px-6 py-3 rounded-lg shadow-lg z-50 max-w-sm"
+                    className="fixed top-4 right-4 bg-green-100 text-black px-6 py-3 rounded-lg shadow-lg shadow-green-200 z-50 max-w-sm outline outline-green-400"
                 >
-                    <div className="flex items-center">
-                        <svg
-                            className="w-6 h-6 mr-2 flex-shrink-0"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 13l4 4L19 7"
-                            ></path>
-                        </svg>
-                        <span className="flex-1">{message}</span>
+                    <div className="flex items-center gap-4">
+                        <img src="/public/tick.svg" alt="" className="size-5" />
+                        <div className="grid">
+                            <span>Success!</span>
+                            <span className="capitalize">{message}</span>
+                        </div>
                         <button
                             onClick={onClose}
                             className="ml-2 text-white hover:text-gray-200 focus:outline-none"

@@ -23,25 +23,27 @@ const Header = ({ activeMenu }) => {
     return (
         <header className="absolute z-20 right-0 left-0 bg-white shadow p-4 flex justify-between items-center">
             <h1 className="text-xl font-semibold">{activeMenu}</h1>
-            <div className="lg:w-[400px] flex items-center px-4 bg-slate-100 rounded-md outline-2 outline-dashed">
-                <SearchBar
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onHandle={handleSearch}
-                />
-                <div className="flex items-center gap-1">
-                    {searchQuery && (
-                        <IoMdClose
-                            className="text-slate-400 cursor-pointer"
-                            onClick={onClearSearch}
-                        />
-                    )}
-                    <FaSearch
-                        className="text-slate-400 cursor-pointer"
-                        onClick={handleSearch}
+            {activeMenu === "Travel Journal" && (
+                <div className="lg:w-[400px] flex items-center px-4 bg-slate-100 rounded-md outline-2 outline-dashed">
+                    <SearchBar
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onHandle={handleSearch}
                     />
+                    <div className="flex items-center gap-1">
+                        {searchQuery && (
+                            <IoMdClose
+                                className="text-slate-400 cursor-pointer"
+                                onClick={onClearSearch}
+                            />
+                        )}
+                        <FaSearch
+                            className="text-slate-400 cursor-pointer"
+                            onClick={handleSearch}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
             <div className="flex items-center space-x-3">
                 <span className="text-gray-600">Hello,</span>
                 <span className="font-semibold capitalize">
