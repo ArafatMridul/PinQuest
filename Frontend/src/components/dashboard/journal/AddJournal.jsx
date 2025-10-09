@@ -1,0 +1,321 @@
+import React, { useState } from "react";
+import { FaPlus } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
+import { MdDelete, MdOutlineUpdate } from "react-icons/md";
+import DateSelector from "./DateSelector";
+import ImageSelector from "./ImageSelector";
+import TagInput from "./TagInput";
+import moment from "moment";
+import { uploadImage } from "../../../../utils/UploadImage.utils";
+import { useJournal } from "../../../../context/journalContext";
+import { useUser } from "../../../../context/userContext";
+
+const AddJournal = ({ journal, type, onClose }) => {
+    const { user } = useUser();
+    const { setJournals } = useJournal();
+    const [visitedDate, setVisitedDate] = useState(
+        journal?.visitedDate || null
+    );
+    const [title, setTitle] = useState(journal?.title || "");
+    const [story, setStory] = useState(journal?.story || "");
+    const [storyImage, setStoryImage] = useState(journal?.imageURL || null);
+    const [city, setCity] = useState(journal?.city || "");
+    const [country, setCountry] = useState(journal?.country || "");
+    const [visitedLocation, setVisitedLocation] = useState(
+        journal?.visitedLocation || []
+    );
+    const [error, setError] = useState("");
+
+    const addNewTravelJournal = async () => {
+        try {
+            let imageUrl = "http://localhost:8000/assets/placeholder.jpg";
+
+            if (storyImage) {
+                const imageUploadRes = await uploadImage(storyImage);
+                imageUrl =
+                    imageUploadRes?.imageUrl ||
+                    imageUploadRes?.imageURL ||
+                    imageUrl;
+            }
+
+            const journalData = {
+                title,
+                story,
+                visitedDate: visitedDate
+                    ? moment(visitedDate).format("YYYY-MM-DD")
+                    : moment().format("YYYY-MM-DD"),
+                city,
+                country,
+                imageURL: imageUrl,
+                visitedLocation,
+            };
+
+            const response = await fetch("http://localhost:8000/journal/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(journalData),
+            });
+
+            console.log(response);
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Journal added successfully:", data);
+                setJournals((prev) => [
+                    ...(Array.isArray(prev) ? prev : []),
+                    { ...data, userId: user.id, ...journalData },
+                ]);
+                setStoryImage(imageUrl);
+                onClose();
+            } else {
+                console.error("Add journal failed:", data); // ✅ log entire error response
+                setError(data.message || "Failed to add journal.");
+            }
+        } catch (error) {
+            console.error("Error adding journal:", error);
+            setError("Failed to add journal.");
+        }
+    };
+
+    const updateTravelJournal = async () => {
+        try {
+            let imageUrl = null;
+
+            if (storyImage) {
+                if (storyImage !== journal?.imageURL) {
+                    const imageUploadRes = await uploadImage(storyImage);
+                    imageUrl =
+                        imageUploadRes?.imageUrl ||
+                        imageUploadRes?.imageURL ||
+                        "http://localhost:8000/assets/placeholder.jpg";
+                } else {
+                    imageUrl = storyImage;
+                }
+            } else {
+                imageUrl = "http://localhost:8000/assets/placeholder.jpg";
+            }
+
+            const journalData = {
+                title,
+                story,
+                visitedDate: visitedDate
+                    ? moment(visitedDate).format("YYYY-MM-DD")
+                    : moment().format("YYYY-MM-DD"),
+                city,
+                country,
+                imageURL: imageUrl,
+                visitedLocation,
+            };
+
+            const response = await fetch(
+                `http://localhost:8000/journal/edit-story/${journal.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                    body: JSON.stringify(journalData),
+                }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setJournals((prev) =>
+                    prev.map((j) =>
+                        j.id === journal.id ? { ...j, ...journalData } : j
+                    )
+                );
+                setStoryImage(imageUrl);
+                onClose();
+            } else {
+                setError(data.message || "Failed to update journal.");
+            }
+        } catch (error) {
+            console.log(error);
+            setError("Failed to update journal.");
+        }
+    };
+
+    const handleAddOrUpdateJournal = () => {
+        if (!title || !story || !visitedDate) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+        if (type === "add") {
+            addNewTravelJournal();
+        } else {
+            updateTravelJournal();
+        }
+    };
+
+    const handleDeleteStoryImage = async () => {
+        try {
+            const deleteImageResponse = await fetch(
+                `http://localhost:8000/journal/delete-images?imageURL=${encodeURIComponent(
+                    journal.imageURL
+                )}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+
+            const data = await deleteImageResponse.json();
+
+            if (deleteImageResponse.ok) {
+                console.log("Image deleted successfully:", data);
+
+                setStoryImage(null);
+
+                // set placeholder in UI immediately
+                setJournals((prev) =>
+                    prev.map((j) =>
+                        j.id === journal.id
+                            ? {
+                                  ...j,
+                                  imageURL:
+                                      "http://localhost:8000/assets/placeholder.jpg",
+                              }
+                            : j
+                    )
+                );
+            } else {
+                setError(data.message || "Failed to delete image.");
+            }
+        } catch (error) {
+            console.log(error);
+            setError("Failed to delete image.");
+        }
+    };
+
+    return (
+        <div>
+            <div className="flex items-center justify-between">
+                <h5 className="text-sm sm:text-xl font-extrabold text-slate-700">
+                    {type === "add" ? "Add New Journal" : "Update Journal"}
+                </h5>
+                <div>
+                    <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
+                        {type === "add" ? (
+                            <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
+                                <button
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
+                                    onClick={handleAddOrUpdateJournal}
+                                >
+                                    <FaPlus />
+                                    Add Journal
+                                </button>
+                                <button className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-2 md:px-4 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full">
+                                    <MdDelete />
+                                    Delete Journal
+                                </button>
+                            </div>
+                        ) : (
+                            <div>
+                                <button
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
+                                    onClick={handleAddOrUpdateJournal}
+                                >
+                                    <MdOutlineUpdate />
+                                    Update Journal
+                                </button>
+                                <button className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-rose-50 text-rose-500 shadow-rose-100/0 border border-rose-100 hover:bg-rose-500 hover:text-white rounded-sm px-2 md:px-4 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full">
+                                    <MdDelete />
+                                    Delete Journal
+                                </button>
+                            </div>
+                        )}
+                        <button className="" onClick={onClose}>
+                            <IoClose className="text-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-400/20 rounded-full" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div className="flex flex-1 flex-col gap-2 pt-4">
+                    <label className="text-xs text-slate-400 font-bold uppercase">
+                        Title
+                    </label>
+                    <input
+                        type="text"
+                        className="text-2xl text-slate-900 font-semibold outline-1 outline-dashed outline-slate-200 rounded-md px-3 py-2"
+                        placeholder="Once upon a time..."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <div className="my-3">
+                        <DateSelector
+                            date={visitedDate}
+                            setDate={setVisitedDate}
+                        />
+                    </div>
+                    <div>
+                        <ImageSelector
+                            image={storyImage}
+                            setImage={setStoryImage}
+                            handleDeleteImage={handleDeleteStoryImage}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2 mt-4">
+                        <label className="text-xs text-slate-400 font-bold uppercase">
+                            story
+                        </label>
+                        <textarea
+                            rows={10}
+                            className="w-full text-slate-900 bg-slate-100 font-semibold outline-none p-3 border-2 border-dashed border-slate-200 rounded-lg focus:border-slate-300 transition-all duration-300 ease-in-out resize-none"
+                            placeholder="Write your story here..."
+                            value={story}
+                            onChange={(e) => setStory(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <div className="flex flex-col">
+                            <label className="text-xs text-slate-400 font-bold uppercase">
+                                city
+                            </label>
+                            <input
+                                type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
+                            />
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-xs text-slate-400 font-bold uppercase">
+                                country
+                            </label>
+                            <input
+                                type="text"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
+                            />
+                        </div>
+                    </div>
+                    <div className="pt-3">
+                        <label className="text-xs text-slate-400 font-bold uppercase">
+                            visited locations
+                        </label>
+                        <TagInput
+                            tags={visitedLocation}
+                            setTags={setVisitedLocation}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default AddJournal;

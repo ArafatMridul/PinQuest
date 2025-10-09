@@ -1,6 +1,8 @@
 import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import { FaHeart, FaLocationDot } from "react-icons/fa6";
+import { useState } from "react";
+import SuccessMessage from "../../ui/SuccessMessage";
 
 const TravelJournalCard = ({ journal, onEdit, onClick, onFavouriteToggle }) => {
     const {
@@ -12,6 +14,21 @@ const TravelJournalCard = ({ journal, onEdit, onClick, onFavouriteToggle }) => {
         visitedDate,
         visitedLocation,
     } = journal;
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+
+    // Handle successful order creation
+    const handleSetFavourite = (message = "Journal added to favourite.") => {
+        setSuccessMessage(message);
+        setShowSuccess(true);
+    };
+
+    // Handle closing success message
+    const handleCloseSuccess = () => {
+        setShowSuccess(false);
+        setSuccessMessage("");
+    };
+
     return (
         <div className="relative border rounded-lg overflow-hidden bg-white hover:shadow-lg hover:shadow-slate-200 transition-all duration-300 ease-in-out cursor-pointer">
             <img
@@ -23,7 +40,14 @@ const TravelJournalCard = ({ journal, onEdit, onClick, onFavouriteToggle }) => {
 
             <button
                 className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white/15 rounded-lg border border-white/30 group cursor-pointer"
-                onClick={onFavouriteToggle}
+                onClick={() => {
+                    onFavouriteToggle(journal);
+                    handleSetFavourite(
+                        isFavourite
+                            ? "Journal removed from favourite."
+                            : "Journal added to favourite."
+                    );
+                }}
             >
                 <FaHeart
                     className={twMerge(
@@ -47,15 +71,23 @@ const TravelJournalCard = ({ journal, onEdit, onClick, onFavouriteToggle }) => {
                 <p className="text-sm text-slate-800 mt-2">
                     {story?.slice(0, 60)}
                 </p>
-                <div className="inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-2 py-1 w-max">
-                    <FaLocationDot className="text-sm text-cyan-700" />
-                    {visitedLocation.map((loc, index) =>
-                        visitedLocation.length === index + 1
-                            ? `${loc}`
-                            : `${loc}, `
-                    )}
+                <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-1 w-max">
+                    <FaLocationDot className="text-lg text-cyan-700" />
+                    <p className="pl-2">
+                        {city},&nbsp;
+                        {visitedLocation.map((loc, index) =>
+                            visitedLocation.length === index + 1
+                                ? `${loc}`
+                                : `${loc}, `
+                        )}
+                    </p>
                 </div>
             </div>
+            <SuccessMessage
+                show={showSuccess}
+                message={successMessage}
+                onClose={handleCloseSuccess}
+            />
         </div>
     );
 };

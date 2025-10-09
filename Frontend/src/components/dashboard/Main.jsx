@@ -7,7 +7,7 @@ const Main = ({ activeMenu }) => {
         <div className="flex-1 flex flex-col">
             <Header activeMenu={activeMenu} />
 
-            <main className="flex-1">
+            <main className="flex-1 relative">
                 {activeMenu === "Travel Journal" && <JournalContainer />}
                 {activeMenu === "Map View" && <Map />}
             </main>

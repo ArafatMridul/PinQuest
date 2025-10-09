@@ -127,4 +127,19 @@
     .container {
         @apply max-w-[1200px] mx-auto px-6 md:px-16 lg:px-0;
     }
+
+    /* Custom scrollbar styles */
+    .scrollbar::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgb(93, 93, 95);
+        border-radius: 4px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background-color: rgb(246, 241, 241);
+    }
 }
