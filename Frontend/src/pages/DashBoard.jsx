@@ -25,6 +25,20 @@ const menuItems = [
     },
 ];
 
+const menuItemsAside = [
+    {
+        name: "Travel Journal",
+        icon: <GlobeEuropeAfricaIcon className="h-8 w-8" />,
+    },
+    { name: "Map View", icon: <MapIcon className="h-8 w-8" /> },
+    { name: "Memories", icon: <Battery100Icon className="h-8 w-8" /> },
+    { name: "Profile", icon: <UserIcon className="h-8 w-8" /> },
+    {
+        name: "Logout",
+        icon: <ArrowLeftStartOnRectangleIcon className="h-8 w-8" />,
+    },
+];
+
 export default function DashBoard() {
     const [activeMenu, setActiveMenu] = useState("Travel Journal");
     const token = localStorage.getItem("token");
@@ -54,6 +68,23 @@ export default function DashBoard() {
                     setActiveMenu={setActiveMenu}
                     activeMenu={activeMenu}
                 />
+                <nav className="flex-1 px-1 space-y-2 pt-12">
+                    {menuItemsAside.map((item) => (
+                        <button
+                            key={item.name}
+                            onClick={() => {
+                                setActiveMenu(item.name);
+                            }}
+                            className={`flex items-center justify-center space-x-3 w-full px-2 py-2 rounded-lg text-gray-700 transition ${
+                                activeMenu === item.name
+                                    ? "bg-blue-500 text-red"
+                                    : "hover:bg-blue-200"
+                            }`}
+                        >
+                            {item.icon}
+                        </button>
+                    ))}
+                </nav>
             </div>
             <div className="flex-1 relative">
                 <Main activeMenu={activeMenu} setActiveMenu={setActiveMenu} />

@@ -47,6 +47,8 @@ const UserProfile = () => {
         getUserDetails();
     }, []);
 
+    console.log(userDetails);
+
     return (
         <div className="min-h-screen pb-8 sm:pb-0 pt-18 relative">
             <div className="px-4 py-2 md:py-4 md:px-8">
@@ -61,7 +63,9 @@ const UserProfile = () => {
                                 className="size-5 absolute -top-2 -right-6"
                             />
                         </h1>
-                        <p className="text-sm md:text-lg">{userDetails?.email}</p>
+                        <p className="text-sm md:text-lg">
+                            {userDetails?.email}
+                        </p>
                     </div>
                 </div>
                 <div className="mt-12 rounded-md overflow-clip border-2 border-slate-200 xl:w-[85%]">
@@ -74,21 +78,25 @@ const UserProfile = () => {
                     />
                     <ProfileInputField
                         label={`Date of Birth`}
-                        field={`${moment(userDetails?.dob).format(
-                            "MMMM Do, YYYY"
-                        )}`}
+                        field={`${
+                            userDetails?.dob
+                                ? moment(userDetails?.dob).format(
+                                      "MMMM Do, YYYY"
+                                  )
+                                : "n/a"
+                        }`}
                     />
                     <ProfileInputField
                         label={`Gender`}
-                        field={`${userDetails?.gender}`}
+                        field={`${userDetails?.gender || "n/a"}`}
                     />
                     <ProfileInputField
                         label={`Nationality`}
-                        field={`${userDetails?.nationality}`}
+                        field={`${userDetails?.nationality || "n/a"}`}
                     />
                     <ProfileInputField
                         label={`Address`}
-                        field={`${userDetails?.address}`}
+                        field={`${userDetails?.address || "n/a"}`}
                     />
                     <ProfileInputField
                         label="Phone Number"
@@ -98,7 +106,7 @@ const UserProfile = () => {
                                       userDetails.phoneNo,
                                       "BD"
                                   ).formatInternational()
-                                : ""
+                                : "n/a"
                         }
                     />
                     <ProfileInputField

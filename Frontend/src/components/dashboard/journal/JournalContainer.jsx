@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import AddJournal from "./AddJournal";
 import ViewJournal from "./ViewJournal";
 import EmptyCard from "./EmptyCard";
+import SuccessMessage from "../../ui/SuccessMessage";
 
 const JournalContainer = () => {
     const { journals, handleToggleFavourite, setJournals, filteredJournal } =
@@ -19,6 +20,20 @@ const JournalContainer = () => {
         isShow: false,
         data: null,
     });
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+
+    // Handle successful edit profile
+    const handleClick = (message = "Action carried out successfully.") => {
+        setSuccessMessage(message);
+        setShowSuccess(true);
+    };
+
+    // Handle closing success message
+    const handleCloseSuccess = () => {
+        setShowSuccess(false);
+        setSuccessMessage("");
+    };
 
     const handleViewJournal = (journal) => {
         setOpenViewModal({ isShow: true, data: journal });
@@ -34,7 +49,6 @@ const JournalContainer = () => {
     };
 
     const deleteJournal = async (journal) => {
-        console.log(journal);
         try {
             const response = await fetch(
                 `http://localhost:8000/journal/delete-journal/${journal.id}`,
@@ -48,7 +62,7 @@ const JournalContainer = () => {
                 }
             );
             const data = await response.json();
-            console.log(data);
+            handleClick(data.message);
             if (response.ok) {
                 setJournals((prev) => prev.filter((j) => j.id !== journal.id));
 
@@ -129,6 +143,7 @@ const JournalContainer = () => {
                                 journal: null,
                             })
                         }
+                        handleClick={handleClick}
                     />
                 ) : (
                     <AddJournal
@@ -141,6 +156,7 @@ const JournalContainer = () => {
                                 journal: null,
                             })
                         }
+                        handleClick={handleClick}
                     />
                 )}
             </Modal>
@@ -193,6 +209,11 @@ const JournalContainer = () => {
             >
                 <FaPlus className="text-lg" />
             </button>
+            <SuccessMessage
+                show={showSuccess}
+                message={successMessage}
+                onClose={handleCloseSuccess}
+            />
         </div>
     );
 };

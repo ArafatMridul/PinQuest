@@ -49,7 +49,7 @@ export const createNewJournalEntry = async (req, res) => {
 
     return res
         .status(201)
-        .json({ message: "Story is added successfully.", id: result.id });
+        .json({ message: "Journal added successfully.", id: result.id });
 };
 
 export const getAllJournals = async (req, res) => {
@@ -124,7 +124,7 @@ export const editJournalStory = async (req, res) => {
 
     return res
         .status(200)
-        .json({ message: "Story is updated successfully.", id: result.id });
+        .json({ message: "Journal updated successfully.", id: result.id });
 };
 
 export const deleteJournal = async (req, res) => {
@@ -195,7 +195,6 @@ export const searchJournals = async (req, res) => {
     try {
         const userId = req.user.id;
         const { query } = req.query;
-        console.log("user ID : ", userId);
         if (!query) {
             return res.status(400).json({ error: "Search query is required" });
         }
