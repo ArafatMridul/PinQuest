@@ -15,7 +15,7 @@ const MapView = ({ locations }) => {
             const map = L.map(mapRef.current);
 
             L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                 {
                     attribution:
                         "&copy; <a href='https://www.openstreetmap.org/copyright'>OSM</a> contributors &copy; <a href='https://carto.com/'>CARTO</a>",
@@ -34,10 +34,10 @@ const MapView = ({ locations }) => {
                     .addTo(map)
                     .bindPopup(
                         `<div style="text-align: center; font-size: 13px;">
-               <strong>${location.city}</strong><br/>
-               ${lat.toFixed(4)}°, ${lng.toFixed(4)}°<br/>
-               ${location.country}
-             </div>`
+                            <strong>${location.city}</strong><br/>
+                            ${lat.toFixed(4)}°, ${lng.toFixed(4)}°<br/>
+                            ${location.country}
+                        </div>`
                     );
 
                 marker.on("click", () => {
@@ -82,7 +82,7 @@ const MapView = ({ locations }) => {
 
     return (
         <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
-            <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-hidden">
+            <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll">
                 {/* Content */}
                 <div className="flex-1 grid grid-rows-2 lg:flex">
                     {/* Map */}
@@ -90,7 +90,7 @@ const MapView = ({ locations }) => {
                         {showRealMap ? (
                             <div ref={mapRef} className="w-full h-full" />
                         ) : (
-                            <div className="absolute inset-0 top-20 sm:top-50 flex items-center justify-center text-gray-400 text-sm">
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                                 <div className="text-center">
                                     <Map className="w-12 h-12 mx-auto mb-2 opacity-40" />
                                     <p>Click "Show Map" to view</p>
@@ -122,7 +122,7 @@ const MapView = ({ locations }) => {
                             </button>
                         </div>
                         {/* Sidebar */}
-                        <div className="lg:w-72 border-l p-4 flex-1">
+                        <div className="w-full border-l p-4 flex-1">
                             <h2 className="text-sm font-semibold text-gray-700 mb-3">
                                 Locations ({locations.length})
                             </h2>
@@ -140,12 +140,11 @@ const MapView = ({ locations }) => {
                                             onClick={() =>
                                                 handlePinClick(location)
                                             }
-                                            className={`p-3 rounded cursor-pointer text-sm border transition
-                      ${
-                          isSelected
-                              ? "bg-blue-50 border-blue-400"
-                              : "hover:bg-gray-50"
-                      }`}
+                                            className={`p-3 rounded cursor-pointer text-sm border transition ${
+                                                isSelected
+                                                    ? "bg-blue-50 border-blue-400"
+                                                    : "hover:bg-gray-50"
+                                            }`}
                                         >
                                             <div className="flex items-start gap-2">
                                                 <MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
@@ -171,24 +170,23 @@ const MapView = ({ locations }) => {
                                     );
                                 })}
                             </div>
+                            {showRealMap && selectedLocation && (
+                                <div className="mt-4 p-3 rounded border bg-gray-300 text-sm">
+                                    <h3 className="font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                        <MapPin className="w-4 h-4" /> Selected
+                                        Location
+                                    </h3>
+                                    <p className="text-gray-800">
+                                        {selectedLocation.city},{" "}
+                                        {selectedLocation.country}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-0.5">
+                                        {selectedLocation.lat.toFixed(2)}°,{" "}
+                                        {selectedLocation.lng.toFixed(2)}°
+                                    </p>
+                                </div>
+                            )}
                         </div>
-
-                        {showRealMap && selectedLocation && (
-                            <div className="mt-4 p-3 rounded border bg-gray-50 text-sm">
-                                <h3 className="font-medium text-gray-700 mb-1 flex items-center gap-1">
-                                    <MapPin className="w-4 h-4" /> Selected
-                                    Location
-                                </h3>
-                                <p className="text-gray-800">
-                                    {selectedLocation.city},{" "}
-                                    {selectedLocation.country}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-0.5">
-                                    {selectedLocation.lat.toFixed(2)}°,{" "}
-                                    {selectedLocation.lng.toFixed(2)}°
-                                </p>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
