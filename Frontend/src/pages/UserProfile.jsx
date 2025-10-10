@@ -48,12 +48,12 @@ const UserProfile = () => {
     }, []);
 
     return (
-        <div className="h-screen pt-18 relative">
-            <div className="py-4 px-8">
+        <div className="min-h-screen pb-8 sm:pb-0 pt-18 relative">
+            <div className="px-4 py-2 md:py-4 md:px-8">
                 <div>
                     <img src="/user.png" alt="" className="size-18" />
                     <div className="mt-4">
-                        <h1 className="capitalize relative inline text-[1.75rem] tracking-[-0.2px] leading-[1.2]">
+                        <h1 className="capitalize relative inline text-2xl md:text-[1.75rem] tracking-[-0.2px] leading-[1.2]">
                             {userDetails?.firstName} {userDetails?.lastName}
                             <img
                                 src="/verified.svg"
@@ -61,7 +61,7 @@ const UserProfile = () => {
                                 className="size-5 absolute -top-2 -right-6"
                             />
                         </h1>
-                        <p>{userDetails?.email}</p>
+                        <p className="text-sm md:text-lg">{userDetails?.email}</p>
                     </div>
                 </div>
                 <div className="mt-12 rounded-md overflow-clip border-2 border-slate-200 xl:w-[85%]">
