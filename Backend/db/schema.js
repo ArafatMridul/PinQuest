@@ -12,6 +12,7 @@ export const usersTable = pgTable("users", {
     id: uuid().primaryKey().defaultRandom(),
     firstName: varchar({ length: 30 }).notNull(),
     lastName: varchar({ length: 30 }).notNull(),
+    country: varchar({ length: 50 }).notNull(),
     email: varchar({ length: 30 }).notNull().unique(),
     password: text().notNull(),
     salt: text().notNull(),

@@ -12,16 +12,24 @@ export const getUserByEmail = async (email) => {
 };
 
 // <--------- CREATE NEW USER --------->
-export const createUser = async (
+export const createUser = async ({
     firstName,
     lastName,
     email,
     hashedPassword,
-    salt
-) => {
+    salt,
+    country,
+}) => {
     const [result] = await db
         .insert(usersTable)
-        .values({ firstName, lastName, email, password: hashedPassword, salt })
+        .values({
+            firstName,
+            lastName,
+            country,
+            email,
+            password: hashedPassword,
+            salt,
+        })
         .returning({ id: usersTable.id });
     return result;
 };
