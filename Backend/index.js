@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import userRouter from "./routes/users.route.js";
 import journalRouter from "./routes/journal.route.js";
+import recommendationRouter from "./routes/recommendations.route.js";
 
 import cors from "cors";
 import path from "node:path";
@@ -30,6 +31,7 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 // Routes
 app.use("/users", userRouter);
 app.use("/journal", journalRouter);
+app.use("/recommendations", recommendationRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running at PORT ${PORT}`);

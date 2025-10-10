@@ -3,6 +3,13 @@ import { MapPin, Navigation, Map, X } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+const redPin = L.icon({
+    iconUrl: "/pointer.png",
+    iconSize: [32, 32],
+    iconAnchor: [13, 26],
+    popupAnchor: [0, -26],
+});
+
 const MapView = ({ locations }) => {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [showRealMap, setShowRealMap] = useState(false);
@@ -15,7 +22,7 @@ const MapView = ({ locations }) => {
             const map = L.map(mapRef.current);
 
             L.tileLayer(
-                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
                 {
                     attribution:
                         "&copy; <a href='https://www.openstreetmap.org/copyright'>OSM</a> contributors &copy; <a href='https://carto.com/'>CARTO</a>",
@@ -30,7 +37,7 @@ const MapView = ({ locations }) => {
                 const lng = parseFloat(location.lng);
                 if (isNaN(lat) || isNaN(lng)) return;
 
-                const marker = L.marker([lat, lng])
+                const marker = L.marker([lat, lng], { icon: redPin })
                     .addTo(map)
                     .bindPopup(
                         `<div style="text-align: center; font-size: 13px;">
@@ -49,10 +56,12 @@ const MapView = ({ locations }) => {
                 bounds.push([lat, lng]);
             });
 
-            if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [40, 40] });
+            if (bounds.length > 1) {
+                map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
+            } else if (bounds.length === 1) {
+                map.setView(bounds[0], 5);
             } else {
-                map.setView([20, 0], 2);
+                map.setView([20, 0], 3);
             }
         }
 
@@ -73,12 +82,14 @@ const MapView = ({ locations }) => {
         setSelectedLocation({ ...location, lat, lng });
         if (!showRealMap) setShowRealMap(true);
         else if (mapInstanceRef.current) {
-            mapInstanceRef.current.setView([lat, lng], 8, {
+            mapInstanceRef.current.setView([lat, lng], 12, {
                 animate: true,
                 duration: 1,
             });
         }
     };
+
+    console.log(locations);
 
     return (
         <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
