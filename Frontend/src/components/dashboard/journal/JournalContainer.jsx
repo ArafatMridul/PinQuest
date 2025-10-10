@@ -6,7 +6,6 @@ import Modal from "react-modal";
 import AddJournal from "./AddJournal";
 import ViewJournal from "./ViewJournal";
 import EmptyCard from "./EmptyCard";
-import { DayPicker } from "react-day-picker";
 
 const JournalContainer = () => {
     const { journals, handleToggleFavourite, setJournals, filteredJournal } =
@@ -66,7 +65,7 @@ const JournalContainer = () => {
         filteredJournal.length === 0 ? journals : filteredJournal;
 
     return (
-        <div className="p-8">
+        <div className="p-3 sm:p-4 lg:p-8">
             <div className="flex gap-7 h-full pt-18">
                 <div className="flex-1">
                     {!Array.isArray(allJournals) ? (
@@ -94,9 +93,6 @@ const JournalContainer = () => {
                                         journal={journal}
                                         onClick={() =>
                                             handleViewJournal(journal)
-                                        }
-                                        onEdit={() =>
-                                            handleEditJournal(journal)
                                         }
                                         onFavouriteToggle={() =>
                                             handleToggleFavourite(journal)

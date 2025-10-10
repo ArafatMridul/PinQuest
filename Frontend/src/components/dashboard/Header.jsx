@@ -1,3 +1,4 @@
+import { twMerge } from "tailwind-merge";
 import { useJournal } from "../../../context/journalContext";
 import { useUser } from "../../../context/userContext";
 import SearchBar from "../SearchBar";
@@ -22,7 +23,14 @@ const Header = ({ activeMenu }) => {
 
     return (
         <header className="absolute z-20 right-0 left-0 bg-white shadow p-4 flex justify-between items-center">
-            <h1 className="text-xl font-semibold">{activeMenu}</h1>
+            <h1
+                className={twMerge(
+                    "text-sm lg:text-xl font-semibold",
+                    activeMenu === "Travel Journal" && "hidden sm:block"
+                )}
+            >
+                {activeMenu}
+            </h1>
             {activeMenu === "Travel Journal" && (
                 <div className="lg:w-[400px] flex items-center px-4 bg-slate-100 rounded-md outline-2 outline-dashed">
                     <SearchBar
@@ -44,15 +52,17 @@ const Header = ({ activeMenu }) => {
                     </div>
                 </div>
             )}
-            <div className="flex items-center space-x-3">
-                <span className="text-gray-600">Hello,</span>
-                <span className="font-semibold capitalize">
+            <div className="flex items-center space-x-1 lg:space-x-3">
+                <span className="hidden sm:inline text-gray-600 text-xs lg:text-lg">
+                    Hello,
+                </span>
+                <span className="text-end font-semibold capitalize text-xs lg:text-lg">
                     {user?.firstName} {user?.lastName}
                 </span>
                 <img
                     src="/user.png"
                     alt="user avatar"
-                    className="w-10 h-10 rounded-full"
+                    className="size-6 lg:size-10 rounded-full"
                 />
             </div>
         </header>

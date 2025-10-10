@@ -4,6 +4,7 @@ import LogoutPopup from "../LogoutPopup";
 import Header from "./Header";
 import JournalContainer from "./journal/JournalContainer";
 import UserProfile from "../../pages/UserProfile";
+import Memory from "../../pages/Memory";
 
 const Main = ({ activeMenu, setActiveMenu }) => {
     const [close, setClose] = useState(false);
@@ -21,6 +22,7 @@ const Main = ({ activeMenu, setActiveMenu }) => {
                 {activeMenu === "Travel Journal" && <JournalContainer />}
                 {activeMenu === "Map View" && <Map />}
                 {activeMenu === "Profile" && <UserProfile />}
+                {activeMenu === "Memories" && <Memory />}
             </main>
             {activeMenu === "Logout" && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-xs z-50">

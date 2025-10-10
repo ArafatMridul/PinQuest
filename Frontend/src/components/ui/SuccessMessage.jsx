@@ -21,9 +21,9 @@ const SuccessMessage = ({ show, message, onClose, type = undefined }) => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="fixed top-4 right-4 bg-green-100 text-black px-6 py-3 rounded-lg shadow-lg shadow-green-200 z-50 max-w-sm outline outline-green-400"
+                    className="fixed top-4 right-4 bg-green-100 text-black px-2 py-2 sm:px-6 sm:py-3 rounded-lg shadow-lg shadow-green-200 z-50 max-w-sm outline outline-green-400"
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm lg:text-lg">
                         <img src="/public/tick.svg" alt="" className="size-5" />
                         <div className="grid">
                             <span>Success!</span>
