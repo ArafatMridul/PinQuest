@@ -8,7 +8,8 @@ import ViewJournal from "./ViewJournal";
 import EmptyCard from "./EmptyCard";
 
 const JournalContainer = () => {
-    const { journals, handleToggleFavourite, setJournals } = useJournal();
+    const { journals, handleToggleFavourite, setJournals, filteredJournal } =
+        useJournal();
     const [addModalOpen, setAddModalOpen] = useState({
         isShow: false,
         type: "add",
@@ -49,10 +50,8 @@ const JournalContainer = () => {
             const data = await response.json();
             console.log(data);
             if (response.ok) {
-                // ✅ remove from UI
                 setJournals((prev) => prev.filter((j) => j.id !== journal.id));
 
-                // ✅ close the modal
                 setOpenViewModal({ isShow: false, data: null });
             } else {
                 console.error("Delete failed:", data.message);
@@ -62,11 +61,14 @@ const JournalContainer = () => {
         }
     };
 
+    const allJournals =
+        filteredJournal.length === 0 ? journals : filteredJournal;
+
     return (
-        <div className="p-8">
-            <div className="flex gap-7">
+        <div className="p-3 sm:p-4 lg:p-8">
+            <div className="flex gap-7 h-full pt-18">
                 <div className="flex-1">
-                    {!Array.isArray(journals) ? (
+                    {!Array.isArray(allJournals) ? (
                         <div>
                             <EmptyCard
                                 imgSrc={
@@ -83,17 +85,14 @@ const JournalContainer = () => {
                             />
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-4">
-                            {Array.isArray(journals) &&
-                                journals.map((journal) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {Array.isArray(allJournals) &&
+                                allJournals.map((journal) => (
                                     <TravelJournalCard
                                         key={journal.id}
                                         journal={journal}
                                         onClick={() =>
                                             handleViewJournal(journal)
-                                        }
-                                        onEdit={() =>
-                                            handleEditJournal(journal)
                                         }
                                         onFavouriteToggle={() =>
                                             handleToggleFavourite(journal)
@@ -103,8 +102,6 @@ const JournalContainer = () => {
                         </div>
                     )}
                 </div>
-
-                <div className="w-[320px]"></div>
             </div>
 
             <Modal

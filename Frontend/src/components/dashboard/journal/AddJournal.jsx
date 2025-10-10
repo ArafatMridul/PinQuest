@@ -14,7 +14,7 @@ const AddJournal = ({ journal, type, onClose }) => {
     const { user } = useUser();
     const { setJournals } = useJournal();
     const [visitedDate, setVisitedDate] = useState(
-        journal?.visitedDate || null
+        journal?.visitedDate || new Date()
     );
     const [title, setTitle] = useState(journal?.title || "");
     const [story, setStory] = useState(journal?.story || "");

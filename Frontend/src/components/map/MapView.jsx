@@ -14,43 +14,34 @@ const MapView = ({ locations }) => {
         if (showRealMap && mapRef.current && !mapInstanceRef.current) {
             const map = L.map(mapRef.current);
 
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "© OpenStreetMap contributors",
-                maxZoom: 19,
-            }).addTo(map);
+            L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+                    attribution:
+                        "&copy; <a href='https://www.openstreetmap.org/copyright'>OSM</a> contributors &copy; <a href='https://carto.com/'>CARTO</a>",
+                }
+            ).addTo(map);
 
             mapInstanceRef.current = map;
 
             const bounds = [];
-
-            // Add markers
             locations.forEach((location) => {
                 const lat = parseFloat(location.lat);
                 const lng = parseFloat(location.lng);
-
-                if (isNaN(lat) || isNaN(lng)) {
-                    console.warn("Invalid coordinates:", location);
-                    return;
-                }
+                if (isNaN(lat) || isNaN(lng)) return;
 
                 const marker = L.marker([lat, lng])
                     .addTo(map)
                     .bindPopup(
-                        `
-              <div style="text-align: center;">
-                <strong style="font-size: 16px;">${location.city}</strong><br/>
-                <span style="color: #666; font-size: 12px;">
-                  ${lat.toFixed(4)}°, ${lng.toFixed(4)}°<br/>
-                  ${location.country}
-                </span>
-              </div>
-            `
+                        `<div style="text-align: center; font-size: 13px;">
+               <strong>${location.city}</strong><br/>
+               ${lat.toFixed(4)}°, ${lng.toFixed(4)}°<br/>
+               ${location.country}
+             </div>`
                     );
 
                 marker.on("click", () => {
                     setSelectedLocation({ ...location, lat, lng });
-
-                    // Center map when marker clicked
                     map.setView([lat, lng], 8, { animate: true, duration: 1 });
                 });
 
@@ -58,9 +49,8 @@ const MapView = ({ locations }) => {
                 bounds.push([lat, lng]);
             });
 
-            // Auto-fit to all markers
             if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [50, 50] });
+                map.fitBounds(bounds, { padding: [40, 40] });
             } else {
                 map.setView([20, 0], 2);
             }
@@ -75,32 +65,14 @@ const MapView = ({ locations }) => {
         };
     }, [showRealMap, locations]);
 
-    useEffect(() => {
-        if (mapInstanceRef.current && selectedLocation && showRealMap) {
-            const { lat, lng } = selectedLocation;
-            mapInstanceRef.current.setView([lat, lng], 8, {
-                animate: true,
-                duration: 1,
-            });
-
-            const marker = markersRef.current.find(
-                (m, idx) => locations[idx].city === selectedLocation.city
-            );
-            if (marker) marker.openPopup();
-        }
-    }, [selectedLocation, showRealMap, locations]);
-
     const handlePinClick = (location) => {
         const lat = parseFloat(location.lat);
         const lng = parseFloat(location.lng);
         if (isNaN(lat) || isNaN(lng)) return;
 
         setSelectedLocation({ ...location, lat, lng });
-
-        if (!showRealMap) {
-            setShowRealMap(true);
-        } else if (mapInstanceRef.current) {
-            // Center map when location selected from sidebar
+        if (!showRealMap) setShowRealMap(true);
+        else if (mapInstanceRef.current) {
             mapInstanceRef.current.setView([lat, lng], 8, {
                 animate: true,
                 duration: 1,
@@ -109,130 +81,111 @@ const MapView = ({ locations }) => {
     };
 
     return (
-        <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-            <div className="h-9/10 mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold flex items-center gap-3">
-                            <Navigation className="w-8 h-8" />
-                            Location Map Viewer
-                        </h1>
-                        <p className="mt-2 text-blue-100">
-                            {showRealMap
-                                ? "Interactive Leaflet map with all locations"
-                                : "Click on any location to view on map"}
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => setShowRealMap(!showRealMap)}
-                        className="flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-all shadow-lg font-medium"
-                    >
-                        {showRealMap ? (
-                            <>
-                                <X className="w-5 h-5" /> Close Map
-                            </>
-                        ) : (
-                            <>
-                                <Map className="w-5 h-5" /> Show Map
-                            </>
-                        )}
-                    </button>
-                </div>
-
-                <div className="flex flex-col lg:flex-row h-full">
+        <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
+            <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-hidden">
+                {/* Content */}
+                <div className="flex-1 grid grid-rows-2 lg:flex">
                     {/* Map */}
-                    <div
-                        className="flex-1 relative bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden"
-                    >
+                    <div className="flex-1 relative">
                         {showRealMap ? (
-                            <div
-                                ref={mapRef}
-                                className="w-full h-full"
-                                style={{ zIndex: 0 }}
-                            />
+                            <div ref={mapRef} className="w-full h-full" />
                         ) : (
-                            <div className="absolute top-1/3 left-20 lg:left-1/2 lg:-translate-x-1/2 flex items-center justify-center text-blue-600 gap-3 font-medium mx-auto">
-                                <Map className="w-24 h-24 text-blue-300 mx-auto mb-4" />
-                                <p className="w-[25ch]">
-                                    Click "Show Map" to view interactive Leaflet
-                                    map
-                                </p>
+                            <div className="absolute inset-0 top-20 sm:top-50 flex items-center justify-center text-gray-400 text-sm">
+                                <div className="text-center">
+                                    <Map className="w-12 h-12 mx-auto mb-2 opacity-40" />
+                                    <p>Click "Show Map" to view</p>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Sidebar */}
-                    <div
-                        className="lg:w-80 bg-gray-50 p-6 overflow-y-auto h-full"
-                    >
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">
-                            Locations ({locations.length})
-                        </h2>
-                        <div className="space-y-3">
-                            {locations.map((location, idx) => {
-                                const lat = parseFloat(location.lat);
-                                const lng = parseFloat(location.lng);
-                                const isSelected =
-                                    selectedLocation?.city === location.city;
+                    <div className="h-full grid grid-rows-[64px_1fr]">
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b px-4 py-3 bg-white border-l gap-3">
+                            <h1 className="text-sm lg:text-lg font-semibold flex items-center gap-2 text-gray-800">
+                                <Navigation className="w-5 h-5" />
+                                Map Viewer
+                            </h1>
+                            <button
+                                onClick={() => setShowRealMap(!showRealMap)}
+                                className="flex items-center gap-2 text-xs lg:text-sm border px-3 py-1.5 rounded hover:bg-gray-100 transition-all duration-300 ease-in-out cursor-pointer"
+                            >
+                                {showRealMap ? (
+                                    <>
+                                        <X className="w-4 h-4" /> Close Map
+                                    </>
+                                ) : (
+                                    <>
+                                        <Map className="w-4 h-4" /> Show Map
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                        {/* Sidebar */}
+                        <div className="lg:w-72 border-l p-4 flex-1">
+                            <h2 className="text-sm font-semibold text-gray-700 mb-3">
+                                Locations ({locations.length})
+                            </h2>
+                            <div className="space-y-2">
+                                {locations.map((location, idx) => {
+                                    const lat = parseFloat(location.lat);
+                                    const lng = parseFloat(location.lng);
+                                    const isSelected =
+                                        selectedLocation?.city ===
+                                        location.city;
 
-                                return (
-                                    <div
-                                        key={idx}
-                                        onClick={() => handlePinClick(location)}
-                                        className={`p-4 rounded-lg cursor-pointer transition-all ${
-                                            isSelected
-                                                ? "bg-blue-600 text-white shadow-lg scale-105"
-                                                : "bg-white hover:bg-blue-50 shadow"
-                                        }`}
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h3 className="font-semibold">
-                                                    {location.city}
-                                                </h3>
-                                                <p
-                                                    className={`text-sm mt-1 ${
-                                                        isSelected
-                                                            ? "text-blue-100"
-                                                            : "text-gray-600"
-                                                    }`}
-                                                >
-                                                    Country: {location.country}
-                                                </p>
-                                                {!isNaN(lat) && !isNaN(lng) && (
-                                                    <p
-                                                        className={`text-sm ${
-                                                            isSelected
-                                                                ? "text-blue-100"
-                                                                : "text-gray-600"
-                                                        }`}
-                                                    >
-                                                        Lat: {lat.toFixed(4)}° |
-                                                        Lng: {lng.toFixed(4)}°
+                                    return (
+                                        <div
+                                            key={idx}
+                                            onClick={() =>
+                                                handlePinClick(location)
+                                            }
+                                            className={`p-3 rounded cursor-pointer text-sm border transition
+                      ${
+                          isSelected
+                              ? "bg-blue-50 border-blue-400"
+                              : "hover:bg-gray-50"
+                      }`}
+                                        >
+                                            <div className="flex items-start gap-2">
+                                                <MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
+                                                <div>
+                                                    <p className="font-medium text-gray-800">
+                                                        {location.city}
                                                     </p>
-                                                )}
+                                                    <p className="text-xs text-gray-500">
+                                                        {location.country}
+                                                    </p>
+                                                    {!isNaN(lat) &&
+                                                        !isNaN(lng) && (
+                                                            <p className="text-xs text-gray-500">
+                                                                {lat.toFixed(2)}
+                                                                °,{" "}
+                                                                {lng.toFixed(2)}
+                                                                °
+                                                            </p>
+                                                        )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         {showRealMap && selectedLocation && (
-                            <div className="mt-4 p-4 bg-blue-100 rounded-lg border-2 border-blue-300">
-                                <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                            <div className="mt-4 p-3 rounded border bg-gray-50 text-sm">
+                                <h3 className="font-medium text-gray-700 mb-1 flex items-center gap-1">
                                     <MapPin className="w-4 h-4" /> Selected
                                     Location
                                 </h3>
-                                <p className="text-blue-800 font-medium">
+                                <p className="text-gray-800">
                                     {selectedLocation.city},{" "}
                                     {selectedLocation.country}
                                 </p>
-                                <p className="text-sm text-blue-700 mt-1">
-                                    {selectedLocation.lat.toFixed(4)}°,{" "}
-                                    {selectedLocation.lng.toFixed(4)}°
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    {selectedLocation.lat.toFixed(2)}°,{" "}
+                                    {selectedLocation.lng.toFixed(2)}°
                                 </p>
                             </div>
                         )}

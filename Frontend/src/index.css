@@ -120,7 +120,7 @@
 }
 
 @theme {
-    --font-pp: "Space Mono", monospace;
+    --font-pp: "Inter", sans-serif;
 }
 
 @layer utilities {

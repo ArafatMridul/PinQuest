@@ -45,7 +45,16 @@ const Map = () => {
                     }
                 })
             );
-            setLocations(coords);
+
+            const uniqueCoords = coords.filter(
+                (loc, index, self) =>
+                    index ===
+                    self.findIndex(
+                        (t) => t.city === loc.city && t.country === loc.country
+                    )
+            );
+
+            setLocations(uniqueCoords);
         };
 
         if (journals.length > 0) {
@@ -55,12 +64,14 @@ const Map = () => {
 
     if (locations.length === 0) {
         return (
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 font-bold text-center">
-                <p>Loading map...</p>
-                <p>
-                    If this takes too long, check if any journal is added, if
-                    not add first to see them appear in the map.
-                </p>
+            <div className="absolute top-70 sm:top-85 lg:top-100 bottom-0 left-0 right-0 flex items-center justify-center font-bold text-center z-30">
+                <div className="w-50 sm:w-70 lg:w-100 text-xs sm:text-sm lg:text-lg">
+                    <p>Loading map...</p>
+                    <p>
+                        If this takes too long, check if any journal is added,
+                        if not add first to see them appear in the map.
+                    </p>
+                </div>
             </div>
         );
     }

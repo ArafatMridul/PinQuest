@@ -4,7 +4,7 @@ import { FaHeart, FaLocationDot } from "react-icons/fa6";
 import { useState } from "react";
 import SuccessMessage from "../../ui/SuccessMessage";
 
-const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
+const TravelJournalCardMemory = ({ journal, onClick }) => {
     const {
         city,
         imageURL,
@@ -16,12 +16,6 @@ const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
     } = journal;
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
-
-    // Handle successful order creation
-    const handleSetFavourite = (message = "Journal added to favourite.") => {
-        setSuccessMessage(message);
-        setShowSuccess(true);
-    };
 
     // Handle closing success message
     const handleCloseSuccess = () => {
@@ -38,20 +32,10 @@ const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
                 onClick={onClick}
             />
 
-            <button
-                className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white/15 rounded-lg border border-white/30 group cursor-pointer"
-                onClick={() => {
-                    onFavouriteToggle(journal);
-                    handleSetFavourite(
-                        isFavourite
-                            ? "Journal removed from favourite."
-                            : "Journal added to favourite."
-                    );
-                }}
-            >
+            <button className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white/15 rounded-lg border border-white/30">
                 <FaHeart
                     className={twMerge(
-                        "text-[22px] text-slate-300 group-hover:text-red-400 transition-colors duration-300 ease-in-out",
+                        "text-[22px] text-slate-300",
                         isFavourite && "text-red-400"
                     )}
                 />
@@ -92,4 +76,4 @@ const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
     );
 };
 
-export default TravelJournalCard;
+export default TravelJournalCardMemory;
