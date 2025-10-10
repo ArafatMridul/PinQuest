@@ -7,7 +7,7 @@ import {
     createUser,
     getProfile,
     getUserByEmail,
-    setProfile,
+    setOrUpdateProfile,
 } from "../services/user.service.js";
 import { generateToken } from "../utils/token.utils.js";
 
@@ -20,7 +20,8 @@ export const sigupNewUser = async (req, res) => {
         return res.status(400).json({ error });
     }
 
-    const { firstName, lastName, email, password } = validationResult.data;
+    const { firstName, lastName, email, password, country } =
+        validationResult.data;
 
     const existingUser = await getUserByEmail(email);
 
@@ -32,13 +33,14 @@ export const sigupNewUser = async (req, res) => {
 
     const { salt, password: hashedPassword } = hashPassword(password);
 
-    const result = await createUser(
+    const result = await createUser({
         firstName,
         lastName,
         email,
         hashedPassword,
-        salt
-    );
+        salt,
+        country,
+    });
 
     if (!result) {
         return res.status(500).json({ error: "Failed to create user." });
@@ -90,18 +92,28 @@ export const getProfileInfoInDashboard = async (req, res) => {
     const user = await getUserByEmail(req.user.email);
     const profile = await getProfile(req.user.id);
 
-    if (!user || !profile) {
+    if (!user && !profile) {
         return res.status(404).json({ error: "User/Details not found" });
     }
 
-    return res.json({ ...user, ...profile });
+    const filteredUser = {
+        userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        country: user.country,
+    };
+
+    return res.json({ ...filteredUser, ...profile });
 };
 
 export const setOrEditProfileInfoInDashboard = async (req, res) => {
     const userId = req.user.id;
     const { dob, nationality, address, phoneNo, gender } = req.body;
 
-    const result = await setProfile({
+    const result = await setOrUpdateProfile({
         address,
         dob,
         gender,

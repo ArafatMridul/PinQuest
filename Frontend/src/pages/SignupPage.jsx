@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
@@ -8,6 +7,7 @@ const SignupPage = () => {
         lastName: "",
         email: "",
         password: "",
+        country: "",
     });
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -84,6 +84,20 @@ const SignupPage = () => {
                                     required
                                 />
                             </div>
+                        </div>
+                        <div>
+                            <label className="block text-gray-300 text-sm font-medium mb-1">
+                                Country
+                            </label>
+                            <input
+                                type="country"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                placeholder="country"
+                                className="w-full px-4 py-3 border border-gray-700 bg-gray-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                                required
+                            />
                         </div>
                         <div>
                             <label className="block text-gray-300 text-sm font-medium mb-1">

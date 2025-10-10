@@ -10,6 +10,7 @@ const UserProfile = () => {
     const [openEdit, setOpenEdit] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [countryCode, setCountryCode] = useState("");
 
     // Handle successful edit profile
     const handleEditProfile = (message = "Profile editted successfully.") => {
@@ -47,6 +48,34 @@ const UserProfile = () => {
         getUserDetails();
     }, []);
 
+    useEffect(() => {
+        const getCountryCode = async () => {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?country=${encodeURIComponent(
+                        userDetails.country
+                    )}&format=json&limit=1&addressdetails=1`,
+                    {
+                        headers: {
+                            "User-Agent": "MyTravelApp/1.0 (me@example.com)",
+                        },
+                    }
+                );
+                const data = await response.json();
+                setCountryCode(
+                    data?.[0]?.address?.country_code?.toUpperCase() ?? null
+                );
+            } catch (err) {
+                console.error("Error fetching coordinates:", err);
+                setCountryCode(null);
+            }
+        };
+
+        if (userDetails?.country) {
+            getCountryCode();
+        }
+    }, [userDetails?.country]);
+
     return (
         <div className="min-h-screen pb-8 sm:pb-0 pt-18 relative">
             <div className="px-4 py-2 md:py-4 md:px-8">
@@ -61,7 +90,9 @@ const UserProfile = () => {
                                 className="size-5 absolute -top-2 -right-6"
                             />
                         </h1>
-                        <p className="text-sm md:text-lg">{userDetails?.email}</p>
+                        <p className="text-sm md:text-lg">
+                            {userDetails?.email}
+                        </p>
                     </div>
                 </div>
                 <div className="mt-12 rounded-md overflow-clip border-2 border-slate-200 xl:w-[85%]">
@@ -74,21 +105,30 @@ const UserProfile = () => {
                     />
                     <ProfileInputField
                         label={`Date of Birth`}
-                        field={`${moment(userDetails?.dob).format(
-                            "MMMM Do, YYYY"
-                        )}`}
+                        field={`${
+                            userDetails?.dob
+                                ? moment(userDetails?.dob).format(
+                                      "MMMM Do, YYYY"
+                                  )
+                                : "n/a"
+                        }`}
                     />
                     <ProfileInputField
                         label={`Gender`}
-                        field={`${userDetails?.gender}`}
+                        field={`${userDetails?.gender || "n/a"}`}
                     />
                     <ProfileInputField
                         label={`Nationality`}
-                        field={`${userDetails?.nationality}`}
+                        field={`${userDetails?.nationality || "n/a"}`}
                     />
                     <ProfileInputField
                         label={`Address`}
-                        field={`${userDetails?.address}`}
+                        field={`${userDetails?.address || "n/a"}`}
+                        src={
+                            userDetails?.address
+                                ? `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`
+                                : null
+                        }
                     />
                     <ProfileInputField
                         label="Phone Number"
@@ -96,9 +136,9 @@ const UserProfile = () => {
                             userDetails?.phoneNo
                                 ? parsePhoneNumber(
                                       userDetails.phoneNo,
-                                      "BD"
-                                  ).formatInternational()
-                                : ""
+                                      countryCode
+                                  )?.formatInternational()
+                                : "n/a"
                         }
                     />
                     <ProfileInputField

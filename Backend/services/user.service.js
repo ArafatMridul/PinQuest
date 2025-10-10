@@ -5,29 +5,31 @@ import { eq } from "drizzle-orm";
 // <--------- GET USER BY EMAIL --------->
 export const getUserByEmail = async (email) => {
     const [user] = await db
-        .select({
-            firstName: usersTable.firstName,
-            lastName: usersTable.lastName,
-            email: usersTable.email,
-            createdAt: usersTable.createdAt,
-            updatedAt: usersTable.updatedAt,
-        })
+        .select()
         .from(usersTable)
         .where(eq(usersTable.email, email));
     return user;
 };
 
 // <--------- CREATE NEW USER --------->
-export const createUser = async (
+export const createUser = async ({
     firstName,
     lastName,
     email,
     hashedPassword,
-    salt
-) => {
+    salt,
+    country,
+}) => {
     const [result] = await db
         .insert(usersTable)
-        .values({ firstName, lastName, email, password: hashedPassword, salt })
+        .values({
+            firstName,
+            lastName,
+            country,
+            email,
+            password: hashedPassword,
+            salt,
+        })
         .returning({ id: usersTable.id });
     return result;
 };
@@ -41,7 +43,7 @@ export const getProfile = async (userId) => {
     return result;
 };
 
-export const setProfile = async ({
+export const setOrUpdateProfile = async ({
     userId,
     dob,
     nationality,
@@ -49,10 +51,26 @@ export const setProfile = async ({
     phoneNo,
     gender,
 }) => {
-    const [result] = await db
-        .insert(userInfoTable)
-        .values({ userId, dob, nationality, address, phoneNo, gender })
-        .returning({ id: userInfoTable.id });
+    // check if row exists
+    const existing = await db
+        .select({ id: userInfoTable.id })
+        .from(userInfoTable)
+        .where(eq(userInfoTable.userId, userId));
 
-    return result;
+    if (existing.length > 0) {
+        // update
+        const [result] = await db
+            .update(userInfoTable)
+            .set({ dob, nationality, address, phoneNo, gender })
+            .where(eq(userInfoTable.userId, userId))
+            .returning({ id: userInfoTable.id });
+        return result;
+    } else {
+        // insert new profile
+        const [result] = await db
+            .insert(userInfoTable)
+            .values({ userId, dob, nationality, address, phoneNo, gender })
+            .returning({ id: userInfoTable.id });
+        return result;
+    }
 };

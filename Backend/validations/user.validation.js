@@ -18,6 +18,7 @@ export const userSignupSchema = z.object({
         .string()
         .min(6, "Password must be at least 6 characters")
         .max(100, "Password must be at most 100 characters"),
+    country: z.string(),
 });
 
 export const userLoginSchema = z.object({

@@ -24,7 +24,7 @@ const TravelJournalCardMemory = ({ journal, onClick }) => {
     };
 
     return (
-        <div className="relative border rounded-lg overflow-hidden bg-white hover:shadow-lg hover:shadow-slate-200 transition-all duration-300 ease-in-out cursor-pointer">
+        <div className="relative h-full border rounded-lg overflow-hidden bg-white transition-all duration-300 ease-in-out cursor-pointer">
             <img
                 src={imageURL}
                 alt={title}
@@ -57,7 +57,7 @@ const TravelJournalCardMemory = ({ journal, onClick }) => {
                 </p>
                 <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-2 font-bold">
                     <FaLocationDot className="text-lg text-cyan-700" />
-                    <p className="pl-2">
+                    <p>
                         {city},&nbsp;
                         {visitedLocation.map((loc, index) =>
                             visitedLocation.length === index + 1

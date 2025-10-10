@@ -10,7 +10,7 @@ import { uploadImage } from "../../../../utils/UploadImage.utils";
 import { useJournal } from "../../../../context/journalContext";
 import { useUser } from "../../../../context/userContext";
 
-const AddJournal = ({ journal, type, onClose }) => {
+const AddJournal = ({ journal, type, onClose, handleClick }) => {
     const { user } = useUser();
     const { setJournals } = useJournal();
     const [visitedDate, setVisitedDate] = useState(
@@ -59,11 +59,10 @@ const AddJournal = ({ journal, type, onClose }) => {
                 body: JSON.stringify(journalData),
             });
 
-            console.log(response);
             const data = await response.json();
+            handleClick(data.message);
 
             if (response.ok) {
-                console.log("Journal added successfully:", data);
                 setJournals((prev) => [
                     ...(Array.isArray(prev) ? prev : []),
                     { ...data, userId: user.id, ...journalData },
@@ -125,6 +124,7 @@ const AddJournal = ({ journal, type, onClose }) => {
             );
 
             const data = await response.json();
+            handleClick(data.message);
 
             if (response.ok) {
                 setJournals((prev) =>
@@ -201,14 +201,14 @@ const AddJournal = ({ journal, type, onClose }) => {
 
     return (
         <div>
-            <div className="flex items-center justify-between">
-                <h5 className="text-sm sm:text-xl font-extrabold text-slate-700">
+            <div className="flex items-center justify-between md:py-4">
+                <h5 className="text-xl sm:text-xl lg:text-3xl font-extrabold text-slate-700">
                     {type === "add" ? "Add New Journal" : "Update Journal"}
                 </h5>
                 <div>
                     <div className="flex items-center gap-3 bg-cyan-50/50 p-2 rounded-l-lg">
                         {type === "add" ? (
-                            <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
+                            <div className="grid md:grid md:grid-cols-2 gap-2">
                                 <button
                                     className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
                                     onClick={handleAddOrUpdateJournal}
@@ -222,7 +222,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                                 </button>
                             </div>
                         ) : (
-                            <div>
+                            <div className="grid lg:grid-cols-2 gap-2">
                                 <button
                                     className="flex items-center gap-1 text-[10px] sm:text-xs font-medium bg-cyan-50 text-[#05b6d3] shadow-cyan-100/0 border border-cyan-100 hover:bg-[#05b6d3] hover:text-white rounded-sm px-3 py-[3px] transition-all duration-300 ease-in-out cursor-pointer w-full"
                                     onClick={handleAddOrUpdateJournal}
@@ -243,13 +243,13 @@ const AddJournal = ({ journal, type, onClose }) => {
                 </div>
             </div>
             <div>
-                <div className="flex flex-1 flex-col gap-2 pt-4">
+                <div className="flex flex-1 flex-col gap-2 py-4">
                     <label className="text-xs text-slate-400 font-bold uppercase">
                         Title
                     </label>
                     <input
                         type="text"
-                        className="text-2xl text-slate-900 font-semibold outline-1 outline-dashed outline-slate-200 rounded-md px-3 py-2"
+                        className="text-lg sm:text-2xl text-slate-900 font-semibold outline-1 outline-dashed outline-slate-200 rounded-md px-3 py-2"
                         placeholder="Once upon a time..."
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -279,7 +279,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                             onChange={(e) => setStory(e.target.value)}
                         ></textarea>
                     </div>
-                    <div className="flex items-center gap-6">
+                    <div className="grid md:flex md:items-center gap-6">
                         <div className="flex flex-col">
                             <label className="text-xs text-slate-400 font-bold uppercase">
                                 city
@@ -288,7 +288,7 @@ const AddJournal = ({ journal, type, onClose }) => {
                                 type="text"
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
-                                className="text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
+                                className="text-lg sm:text-xl text-slate-900 font-semibold outline-1 outline-dashed rounded-md px-3 py-2 mt-2"
                             />
                         </div>
                         <div className="flex flex-col">
