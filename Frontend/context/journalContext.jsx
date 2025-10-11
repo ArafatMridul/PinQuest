@@ -1,24 +1,27 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useUser } from "./userContext";
 
 const JournalContext = createContext();
 
 const JournalProvider = ({ children }) => {
     const { user } = useUser();
+    const abortRef = useRef(Symbol());
+    const cacheRef = useRef(new Map());
     const [journals, setJournals] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredJournal, setFilteredJournal] = useState([]);
     const [uniqueCountryCodes, setUniqueCountryCodes] = useState([]);
     const [locations, setLocations] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchCoordinates = async () => {
+            setIsLoading(true);
             const sleep = (ms) =>
                 new Promise((resolve) => setTimeout(resolve, ms));
             const coords = [];
 
             for (const journal of journals) {
-                // Skip if city or country is missing/empty
                 if (!journal?.city || !journal?.country) {
                     coords.push({
                         city: journal.city,
@@ -26,6 +29,15 @@ const JournalProvider = ({ children }) => {
                         lat: null,
                         lng: null,
                     });
+                    continue;
+                }
+
+                const key = `${journal.city
+                    .trim()
+                    .toLowerCase()},${journal.country.trim().toLowerCase()}`;
+
+                if (cacheRef.current.has(key)) {
+                    coords.push(cacheRef.current.get(key));
                     continue;
                 }
 
@@ -38,18 +50,22 @@ const JournalProvider = ({ children }) => {
 
                     const response = await fetch(url, {
                         headers: {
-                            "User-Agent": "MyTravelApp/1.0 (me@example.com)", // 👈 REQUIRED by Nominatim
+                            "User-Agent": "MyTravelApp/1.0 (me@example.com)",
                         },
                     });
 
                     const data = await response.json();
 
-                    coords.push({
+                    const result = {
                         city: journal.city,
                         country: journal.country,
                         lat: data?.[0]?.lat ?? null,
                         lng: data?.[0]?.lon ?? null,
-                    });
+                        code: data?.[0]?.address?.country_code ?? null,
+                    };
+
+                    cacheRef.current.set(key, result);
+                    coords.push(result);
                 } catch (err) {
                     console.error("Error fetching coordinates:", err);
                     coords.push({
@@ -60,25 +76,47 @@ const JournalProvider = ({ children }) => {
                     });
                 }
 
-                // 👇 wait ~1 second between calls (Nominatim rate limit)
                 await sleep(1100);
             }
 
-            // Optional: keep only unique city+country pairs
-            const uniqueCoords = coords.filter(
-                (loc, index, self) =>
-                    index ===
-                    self.findIndex(
-                        (t) => t.city === loc.city && t.country === loc.country
-                    )
-            );
+            if (abortRef.current) {
+                const validCoords = coords.filter(
+                    (c) => c.lat !== null && c.lng !== null
+                );
 
-            setLocations(uniqueCoords);
+                const uniqueCoords = validCoords.filter(
+                    (loc, i, arr) =>
+                        i ===
+                        arr.findIndex(
+                            (t) =>
+                                t.city === loc.city && t.country === loc.country
+                        )
+                );
+
+                setLocations(uniqueCoords);
+                setUniqueCountryCodes([
+                    ...new Set(validCoords.map((c) => c.code).filter(Boolean)),
+                ]);
+            }
+            setIsLoading(false);
         };
 
         if (journals.length > 0) {
-            fetchCoordinates();
+            const newAbortSymbol = Symbol();
+            abortRef.current = newAbortSymbol;
+            fetchCoordinates().finally(() => {
+                if (abortRef.current === newAbortSymbol) {
+                    abortRef.current = null;
+                }
+            });
+        } else {
+            setLocations([]);
+            setUniqueCountryCodes([]);
         }
+
+        return () => {
+            abortRef.current = null;
+        };
     }, [journals]);
 
     useEffect(() => {
@@ -106,65 +144,6 @@ const JournalProvider = ({ children }) => {
 
         getAllJournals();
     }, [user]);
-
-    useEffect(() => {
-        // guard if journals is missing or empty
-        if (!Array.isArray(journals) || journals.length === 0) {
-            setUniqueCountryCodes([]);
-            return;
-        }
-
-        const getCountryCodes = async () => {
-            try {
-                const codes = await Promise.all(
-                    journals.map(async (journal) => {
-                        try {
-                            // skip if country missing/empty
-                            if (
-                                !journal?.country ||
-                                journal.country.trim() === ""
-                            ) {
-                                return null;
-                            }
-
-                            const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
-                                journal.city || ""
-                            )}&country=${encodeURIComponent(
-                                journal.country
-                            )}&format=json&limit=1&addressdetails=1`;
-
-                            const response = await fetch(url, {
-                                headers: {
-                                    "User-Agent":
-                                        "MyTravelApp/1.0 (me@example.com)",
-                                },
-                            });
-
-                            const data = await response.json();
-                            if (Array.isArray(data) && data.length > 0) {
-                                return (
-                                    data[0].address.country_code?.toUpperCase() ??
-                                    null
-                                );
-                            }
-                            return null;
-                        } catch (err) {
-                            console.error("Error fetching coordinates:", err);
-                            return null;
-                        }
-                    })
-                );
-
-                const uniqueCodes = [...new Set(codes.filter(Boolean))];
-                setUniqueCountryCodes(uniqueCodes);
-            } catch (outerErr) {
-                console.error("Error in getCountryCodes:", outerErr);
-                setUniqueCountryCodes([]);
-            }
-        };
-
-        getCountryCodes();
-    }, [journals]);
 
     const handleToggleFavourite = async (journal) => {
         const journalId = journal.id;
@@ -228,6 +207,7 @@ const JournalProvider = ({ children }) => {
                 uniqueCountryCodes,
                 setUniqueCountryCodes,
                 locations,
+                isLoading,
             }}
         >
             {children}

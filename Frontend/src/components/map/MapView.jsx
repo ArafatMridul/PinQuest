@@ -101,7 +101,7 @@ const MapView = ({ locations }) => {
                         {showRealMap ? (
                             <div ref={mapRef} className="w-full h-full" />
                         ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm h-full">
                                 <div className="text-center">
                                     <Map className="w-12 h-12 mx-auto mb-2 opacity-40" />
                                     <p>Click "Show Map" to view</p>
@@ -133,7 +133,7 @@ const MapView = ({ locations }) => {
                             </button>
                         </div>
                         {/* Sidebar */}
-                        <div className="w-full border-l p-4 flex-1">
+                        <div className="w-full border-l p-4 flex-1 overflow-scroll sbar">
                             <h2 className="text-sm font-semibold text-gray-700 mb-3">
                                 Locations ({locations.length})
                             </h2>
