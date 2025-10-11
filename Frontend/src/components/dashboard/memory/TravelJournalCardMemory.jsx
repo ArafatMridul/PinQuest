@@ -2,7 +2,7 @@ import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import { FaHeart, FaLocationDot } from "react-icons/fa6";
 import { useState } from "react";
-import SuccessMessage from "../../ui/SuccessMessage";
+import { motion } from "motion/react";
 
 const TravelJournalCardMemory = ({ journal, onClick }) => {
     const {
@@ -14,64 +14,78 @@ const TravelJournalCardMemory = ({ journal, onClick }) => {
         visitedDate,
         visitedLocation,
     } = journal;
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
-
-    // Handle closing success message
-    const handleCloseSuccess = () => {
-        setShowSuccess(false);
-        setSuccessMessage("");
-    };
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className="relative h-full border rounded-lg overflow-hidden bg-white transition-all duration-300 ease-in-out cursor-pointer">
+        <div
+            className="relative h-96 rounded-3xl overflow-hidden group cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg transition-all duration-500 ease-in-out hover:scale-[1.02]"
+            onClick={onClick}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Background Image */}
             <img
                 src={imageURL}
                 alt={title}
-                className="w-full h-56 object-cover rounded-lg"
-                onClick={onClick}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
             />
 
-            <button className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white/15 rounded-lg border border-white/30">
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+            {/* Favourite Icon */}
+            <button
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/20"
+            >
                 <FaHeart
                     className={twMerge(
-                        "text-[22px] text-slate-300",
-                        isFavourite && "text-red-400"
+                        "w-5 h-5 transition-colors",
+                        isFavourite ? "fill-red-500 text-red-500" : "text-white"
                     )}
                 />
             </button>
 
-            <div className="p-4" onClick={onClick}>
-                <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                        <h6 className="text-sm font-bold">{title}</h6>
-                        <span className="text-xs text-slate-500">
-                            {visitedDate
-                                ? moment(visitedDate).format("Do MMM, YYYY")
-                                : "-"}
-                        </span>
-                    </div>
+            {/* Card Content */}
+            <div className="absolute inset-x-0 bottom-0 p-6 transform translate-y-2 group-hover:-translate-y-6 transition-transform duration-300">
+                <div className="flex flex-col gap-1 mb-2">
+                    <h6 className="text-xl font-semibold text-white">
+                        {title}
+                    </h6>
+                    <span className="text-xs text-white/70">
+                        {visitedDate
+                            ? moment(visitedDate).format("Do MMM, YYYY")
+                            : "-"}
+                    </span>
                 </div>
-                <p className="text-sm text-slate-800 mt-2">
-                    {story?.slice(0, 60)}
-                </p>
-                <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-2 font-bold">
-                    <FaLocationDot className="text-lg text-cyan-700" />
-                    <p>
+
+                <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={
+                        isHovered
+                            ? { opacity: 1, height: "auto" }
+                            : { opacity: 0, height: 0 }
+                    }
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="text-white/80 text-sm mb-4 overflow-hidden"
+                >
+                    {story.slice(0, 150)}...
+                </motion.p>
+
+                <div className="inline-flex items-center gap-2 bg-cyan-400/20 backdrop-blur-md text-white text-xs px-4 py-2 rounded-full border border-cyan-300/30">
+                    <FaLocationDot className="text-base text-cyan-300" />
+                    <span>
                         {city},&nbsp;
-                        {visitedLocation.map((loc, index) =>
-                            visitedLocation.length === index + 1
-                                ? `${loc}`
-                                : `${loc}, `
-                        )}
-                    </p>
+                        {visitedLocation
+                            .map((loc, index) =>
+                                visitedLocation.length === index + 1
+                                    ? `${loc}`
+                                    : `${loc}, `
+                            )
+                            .join("")}
+                    </span>
                 </div>
             </div>
-            <SuccessMessage
-                show={showSuccess}
-                message={successMessage}
-                onClose={handleCloseSuccess}
-            />
         </div>
     );
 };

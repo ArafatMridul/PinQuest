@@ -150,11 +150,10 @@ const Memory = () => {
                         backdropFilter: "blur(6px)",
                         zIndex: 1000,
                         paddingTop: "8vh",
-                        paddingInline: "12px",
                     },
                 }}
                 appElement={document.getElementById("root")}
-                className="w-full sm:max-w-[85vw] lg:max-w-[950px] h-[80vh] bg-white rounded-xl shadow-2xl mx-auto p-6 overflow-y-auto scrollbar"
+                className="w-fit bg-white rounded-3xl shadow-2xl mx-auto overflow-y-auto scrollbar"
             >
                 <ViewJournalMemory
                     onClose={() => {

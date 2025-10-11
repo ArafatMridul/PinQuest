@@ -13,6 +13,7 @@ const JournalProvider = ({ children }) => {
     const [uniqueCountryCodes, setUniqueCountryCodes] = useState([]);
     const [locations, setLocations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         const fetchCoordinates = async () => {
@@ -29,6 +30,9 @@ const JournalProvider = ({ children }) => {
                         lat: null,
                         lng: null,
                     });
+                    setProgress(
+                        ((coords.length / journals.length) * 100).toFixed(0)
+                    );
                     continue;
                 }
 
@@ -38,6 +42,9 @@ const JournalProvider = ({ children }) => {
 
                 if (cacheRef.current.has(key)) {
                     coords.push(cacheRef.current.get(key));
+                    setProgress(
+                        ((coords.length / journals.length) * 100).toFixed(0)
+                    );
                     continue;
                 }
 
@@ -75,7 +82,9 @@ const JournalProvider = ({ children }) => {
                         lng: null,
                     });
                 }
-
+                setProgress(
+                    ((coords.length / journals.length) * 100).toFixed(0)
+                );
                 await sleep(1100);
             }
 
@@ -208,6 +217,7 @@ const JournalProvider = ({ children }) => {
                 setUniqueCountryCodes,
                 locations,
                 isLoading,
+                progress,
             }}
         >
             {children}

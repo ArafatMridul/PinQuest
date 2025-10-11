@@ -79,7 +79,7 @@ const JournalContainer = () => {
         filteredJournal.length === 0 ? journals : filteredJournal;
 
     return (
-        <div className="p-3 sm:p-4 lg:p-8">
+        <div className="p-3 sm:p-4 lg:p-6">
             <div className="flex gap-7 h-full pt-18">
                 <div className="flex-1">
                     {!Array.isArray(allJournals) ? (
@@ -174,7 +174,7 @@ const JournalContainer = () => {
                     },
                 }}
                 appElement={document.getElementById("root")}
-                className="sm:max-w-[80vw] lg:max-w-[1000px] h-[80vh] bg-white rounded-sm mx-auto p-5 overflow-y-scroll scrollbar z-50"
+                className="w-fit bg-white rounded-3xl shadow-2xl mx-auto overflow-y-auto sm:max-w-[80vw] lg:max-w-[1000px]"
             >
                 <ViewJournal
                     onClose={() => {
@@ -198,7 +198,7 @@ const JournalContainer = () => {
             </Modal>
 
             <button
-                className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-800 text-white fixed bottom-8 right-8 flex items-center justify-center shadow-lg hover:bg-slate-600 transition-colors duration-300 ease-in-out cursor-pointer"
+                className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-400 text-white fixed bottom-12 right-12 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors duration-300 ease-in-out cursor-pointer z-30"
                 onClick={() =>
                     setAddModalOpen({
                         isShow: true,
@@ -207,7 +207,7 @@ const JournalContainer = () => {
                     })
                 }
             >
-                <FaPlus className="text-lg" />
+                <FaPlus className="text-lg text-black" />
             </button>
             <SuccessMessage
                 show={showSuccess}

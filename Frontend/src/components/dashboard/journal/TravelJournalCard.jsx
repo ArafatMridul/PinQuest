@@ -1,11 +1,13 @@
 import moment from "moment";
-import { twMerge } from "tailwind-merge";
-import { FaHeart, FaLocationDot } from "react-icons/fa6";
 import { useState } from "react";
+import { FaHeart, FaLocationDot } from "react-icons/fa6";
+import { twMerge } from "tailwind-merge";
 import SuccessMessage from "../../ui/SuccessMessage";
+import { motion } from "framer-motion"; // ✅ Correct import
 
 const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
     const {
+        id,
         city,
         imageURL,
         isFavourite,
@@ -14,75 +16,121 @@ const TravelJournalCard = ({ journal, onClick, onFavouriteToggle }) => {
         visitedDate,
         visitedLocation,
     } = journal;
+
     const [showSuccess, setShowSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [liked, setLiked] = useState({ [id]: isFavourite });
+    const [isHovered, setIsHovered] = useState(false);
 
-    // Handle successful order creation
     const handleSetFavourite = (message = "Journal added to favourite.") => {
         setSuccessMessage(message);
         setShowSuccess(true);
     };
 
-    // Handle closing success message
     const handleCloseSuccess = () => {
         setShowSuccess(false);
         setSuccessMessage("");
     };
 
+    const handleFavouriteClick = () => {
+        const updated = !liked[id];
+        setLiked({ ...liked, [id]: updated });
+        onFavouriteToggle(journal);
+        handleSetFavourite(
+            updated
+                ? "Journal added to favourite."
+                : "Journal removed from favourite."
+        );
+    };
+
     return (
-        <div className="relative border rounded-lg overflow-hidden bg-white hover:shadow-lg hover:shadow-slate-200 transition-all duration-300 ease-in-out cursor-pointer">
+        <div
+            key={id}
+            className="relative h-96 rounded-3xl overflow-hidden cursor-pointer group"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={onClick}
+        >
+            {/* Background Image */}
             <img
                 src={imageURL}
                 alt={title}
-                className="w-full h-56 object-cover rounded-lg"
-                onClick={onClick}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             />
 
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+            {/* Favourite Button */}
             <button
-                className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white/15 rounded-lg border border-white/30 group cursor-pointer"
-                onClick={() => {
-                    onFavouriteToggle(journal);
-                    handleSetFavourite(
-                        isFavourite
-                            ? "Journal removed from favourite."
-                            : "Journal added to favourite."
-                    );
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleFavouriteClick();
                 }}
+                className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-all z-10 cursor-pointer group/like"
             >
                 <FaHeart
                     className={twMerge(
-                        "text-[22px] text-slate-300 group-hover:text-red-400 transition-colors duration-300 ease-in-out",
-                        isFavourite && "text-red-400"
+                        "w-5 h-5 transition-colors group-hover/like:fill-red-500",
+                        liked[id] ? "fill-red-500 text-red-500" : "text-white"
                     )}
                 />
             </button>
 
-            <div className="p-4" onClick={onClick}>
-                <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                        <h6 className="text-sm font-bold">{title}</h6>
-                        <span className="text-xs text-slate-500">
-                            {visitedDate
-                                ? moment(visitedDate).format("Do MMM, YYYY")
-                                : "-"}
-                        </span>
+            {/* Card Content */}
+            <div className="absolute inset-x-0 bottom-0 p-6 transform translate-y-0 group-hover:-translate-y-6 transition-transform duration-300">
+                {/* Tags */}
+                <div className="mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="flex gap-2 mb-3 flex-wrap">
+                        {visitedLocation.map((tag, idx) => (
+                            <span
+                                key={idx}
+                                className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs rounded-full border border-white/30"
+                            >
+                                {tag}
+                            </span>
+                        ))}
                     </div>
                 </div>
-                <p className="text-sm text-slate-800 mt-2">
-                    {story?.slice(0, 60)}
-                </p>
-                <div className="max-w-[300px] xl:max-w-none inline-flex items-center gap-2 text-xs text-cya-600 mt-3 bg-cyan-200/40 rounded-full px-4 py-2 font-bold">
-                    <FaLocationDot className="text-lg text-cyan-700" />
-                    <p className="pl-2">
-                        {city},&nbsp;
-                        {visitedLocation.map((loc, index) =>
-                            visitedLocation.length === index + 1
-                                ? `${loc}`
-                                : `${loc}, `
-                        )}
-                    </p>
+
+                {/* Title */}
+                <h3 className="text-2xl font-medium text-white mb-2">
+                    {title}
+                </h3>
+
+                {/* Animated Story */}
+                <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={
+                        isHovered
+                            ? { opacity: 1, height: "auto" }
+                            : { opacity: 0, height: 0 }
+                    }
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="text-white/80 text-sm mb-4 overflow-hidden"
+                >
+                    {story.slice(0, 150)}...
+                </motion.p>
+
+                {/* Date and Location */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
+                            <span className="text-white font-medium">
+                                {visitedDate
+                                    ? moment(visitedDate).format("Do MMM, YYYY")
+                                    : "-"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-white/80">
+                        <FaLocationDot className="text-lg text-cyan-400" />
+                        <span className="text-sm">{city}</span>
+                    </div>
                 </div>
             </div>
+
+            {/* Success Message */}
             <SuccessMessage
                 show={showSuccess}
                 message={successMessage}
