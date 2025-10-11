@@ -37,6 +37,7 @@ const JournalContainer = () => {
 
     const handleViewJournal = (journal) => {
         setOpenViewModal({ isShow: true, data: journal });
+        document.querySelector("body").style.overflow = "hidden";
     };
 
     const handleEditJournal = (journal) => {
@@ -46,6 +47,7 @@ const JournalContainer = () => {
             type: "edit",
             journal,
         }));
+        document.querySelector("body").style.overflow = "hidden";
     };
 
     const deleteJournal = async (journal) => {
@@ -136,26 +138,30 @@ const JournalContainer = () => {
                     <AddJournal
                         journal={addModalOpen.journal}
                         type={addModalOpen.type}
-                        onClose={() =>
+                        onClose={() => {
                             setAddModalOpen({
                                 isShow: false,
                                 type: "add",
                                 journal: null,
-                            })
-                        }
+                            });
+                            document.querySelector("body").style.overflow =
+                                "auto";
+                        }}
                         handleClick={handleClick}
                     />
                 ) : (
                     <AddJournal
                         journal={addModalOpen.journal}
                         type={addModalOpen.type}
-                        onClose={() =>
+                        onClose={() => {
                             setAddModalOpen({
                                 isShow: false,
                                 type: "edit",
                                 journal: null,
-                            })
-                        }
+                            });
+                            document.querySelector("body").style.overflow =
+                                "auto";
+                        }}
                         handleClick={handleClick}
                     />
                 )}
@@ -174,7 +180,7 @@ const JournalContainer = () => {
                     },
                 }}
                 appElement={document.getElementById("root")}
-                className="w-fit bg-white rounded-3xl shadow-2xl mx-auto overflow-y-auto sm:max-w-[80vw] lg:max-w-[1000px]"
+                className="w-fit bg-white rounded-3xl shadow-2xl mx-auto overflow-y-auto sm:max-w-[80vw] lg:max-w-[1000px] max-h-[80vh]"
             >
                 <ViewJournal
                     onClose={() => {
@@ -182,6 +188,7 @@ const JournalContainer = () => {
                             ...prev,
                             isShow: false,
                         }));
+                        document.querySelector("body").style.overflow = "auto";
                     }}
                     onEditClick={() => {
                         setOpenViewModal((prev) => ({
@@ -199,13 +206,14 @@ const JournalContainer = () => {
 
             <button
                 className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-400 text-white fixed bottom-12 right-12 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors duration-300 ease-in-out cursor-pointer z-30"
-                onClick={() =>
+                onClick={() => {
                     setAddModalOpen({
                         isShow: true,
                         type: "add",
                         journal: null,
-                    })
-                }
+                    });
+                    document.querySelector("body").style.overflow = "hidden";
+                }}
             >
                 <FaPlus className="text-lg text-black" />
             </button>

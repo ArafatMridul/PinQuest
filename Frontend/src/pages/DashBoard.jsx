@@ -93,7 +93,7 @@ export default function DashBoard() {
 
     return (
         <div className="min-h-screen grid grid-cols-[50px_1fr] md:grid-cols-[80px_1fr] xl:grid-cols-[256px_1fr] bg-gray-100">
-            <div className="bg-white">
+            <div className="bg-white border-r-1 border-slate-300">
                 <Asidebar
                     menuItems={menuItems}
                     setActiveMenu={setActiveMenu}

@@ -44,18 +44,18 @@ const ViewJournal = ({ journal, onClose, onEditClick, onDeleteClick }) => {
             </div>
 
             {/* Content Section */}
-            <div className="p-4 lg:p-8">
+            <div className="py-4 px-6 lg:py-10">
                 {/* Action Buttons */}
                 <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
                     <button
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white outline-1 text-black font-medium rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white outline-2 outline-black/40 text-black font-medium rounded-xl hover:bg-black hover:text-white hover:outline-none transition-all duration-300 ease-in-out cursor-pointer"
                         onClick={onEditClick}
                     >
                         <MdOutlineUpdate className="text-lg" />
                         Update Journal
                     </button>
                     <button
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-rose-200 text-rose-500 font-medium rounded-xl hover:bg-rose-50 hover:border-rose-300 transition-all duration-300"
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-rose-200 text-rose-600 font-medium rounded-xl hover:bg-rose-50 hover:border-rose-400 transition-all duration-300 ease-in-out cursor-pointer"
                         onClick={onDeleteClick}
                     >
                         <MdOutlineDelete className="text-lg" />
@@ -73,9 +73,6 @@ const ViewJournal = ({ journal, onClose, onEditClick, onDeleteClick }) => {
                     </p>
                 </div>
             </div>
-
-            {/* Decorative Bottom Accent */}
-            <div className="h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500" />
         </div>
     );
 };

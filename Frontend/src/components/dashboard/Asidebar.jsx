@@ -85,13 +85,13 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
             </AnimatePresence>
 
             {/* Desktop Nav (always expanded) */}
-            <aside className="hidden xl:flex bg-white shadow-lg flex-col fixed top-0 bottom-0 w-64 z-30">
+            <aside className="hidden xl:flex bg-white border-r-1 border-slate-300 flex-col fixed top-0 bottom-0 w-64 z-30">
                 <div className="flex items-center justify-between p-6">
                     <Link to="/" className="text-2xl font-bold text-black">
                         PinQuest
                     </Link>
                 </div>
-                <nav className="flex-1 px-2 space-y-2">
+                <nav className="flex-1 px-2 space-y-2 ">
                     {menuItems.map((item) => (
                         <button
                             key={item.name}

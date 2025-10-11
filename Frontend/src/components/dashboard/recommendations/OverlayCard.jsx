@@ -1,8 +1,6 @@
-import React, { useState } from "react";
 import { useJournal } from "../../../../context/journalContext";
 
 const OverlayCard = () => {
-    const [liked, setLiked] = useState({});
     const { journals } = useJournal();
     console.log(journals)
     return (
@@ -19,21 +17,6 @@ const OverlayCard = () => {
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-                    <button
-                        onClick={() =>
-                            setLiked({ ...liked, [dest.id]: !liked[dest.id] })
-                        }
-                        className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-all z-10"
-                    >
-                        {/* <Heart
-                            className={`w-5 h-5 ${
-                                liked[dest.id]
-                                    ? "fill-red-500 text-red-500"
-                                    : "text-white"
-                            } transition-colors`}
-                        /> */}
-                    </button>
 
                     <div className="absolute inset-x-0 bottom-0 p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
                         <div className="mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
