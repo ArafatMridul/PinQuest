@@ -57,7 +57,7 @@ const Header = ({ activeMenu }) => {
                     Hello,
                 </span>
                 <span className="text-end font-semibold capitalize text-xs lg:text-lg">
-                    {user?.firstName} {user?.lastName}
+                    {user?.firstName}
                 </span>
                 <img
                     src="/user.png"

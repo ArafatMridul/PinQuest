@@ -95,7 +95,7 @@ const MapView = ({ locations }) => {
         <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
             <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll">
                 {/* Content */}
-                <div className="flex-1 grid grid-rows-2 lg:flex">
+                <div className="flex-1 grid grid-rows-[50%_1fr] lg:flex">
                     {/* Map */}
                     <div className="flex-1 relative">
                         {showRealMap ? (

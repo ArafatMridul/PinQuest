@@ -17,12 +17,12 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
                         animate={{ x: 0 }}
                         exit={{ x: "-100%" }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="bg-white shadow-lg flex flex-col fixed top-0 bottom-0 w-64 md:hidden z-50"
+                        className="bg-white shadow-lg flex flex-col fixed top-0 bottom-0 w-64 xl:hidden z-50"
                     >
                         <div className="flex items-center justify-between p-4">
                             <Link
                                 to="/"
-                                className="text-xl font-bold text-blue-600"
+                                className="text-xl font-bold text-black"
                             >
                                 PinQuest
                             </Link>
@@ -41,14 +41,16 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
                                         setActiveMenu(item.name);
                                         setMobileOpen(false);
                                     }}
-                                    className={`flex items-center space-x-3 w-full px-4 py-2 rounded-lg text-gray-700 transition ${
+                                    className={`flex items-center space-x-3 w-full px-4 py-2 rounded-lg text-black transition ${
                                         activeMenu === item.name
-                                            ? "bg-blue-500 text-white"
-                                            : "hover:bg-blue-200"
+                                            ? "bg-slate-400 text-black"
+                                            : "hover:bg-slate-300"
                                     }`}
                                 >
                                     {item.icon}
-                                    <span>{item.name}</span>
+                                    <span className="text-black">
+                                        {item.name}
+                                    </span>
                                 </button>
                             ))}
                         </nav>
@@ -75,17 +77,17 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
                         exit={{ opacity: 0 }}
                         transition={{ ease: "easeInOut" }}
                         onClick={() => setMobileOpen(true)}
-                        className="md:hidden fixed top-3 left-2 z-30 text-3xl text-blue-600"
+                        className="xl:hidden fixed top-5 left-2 md:top-6 md:left-6 z-30 text-3xl border rounded-sm p-0.25 bg-slate-100"
                     >
-                        <IoMenu />
+                        <IoMenu className="text-black" />
                     </motion.button>
                 )}
             </AnimatePresence>
 
             {/* Desktop Nav (always expanded) */}
-            <aside className="hidden md:flex bg-white shadow-lg flex-col fixed top-0 bottom-0 w-64 z-30">
+            <aside className="hidden xl:flex bg-white shadow-lg flex-col fixed top-0 bottom-0 w-64 z-30">
                 <div className="flex items-center justify-between p-6">
-                    <Link to="/" className="text-2xl font-bold text-blue-600">
+                    <Link to="/" className="text-2xl font-bold text-black">
                         PinQuest
                     </Link>
                 </div>
@@ -94,12 +96,11 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
                         <button
                             key={item.name}
                             onClick={() => setActiveMenu(item.name)}
-                            className={`flex items-center space-x-3 w-full px-4 py-2 rounded-lg text-gray-700 transition
-                ${
-                    activeMenu === item.name
-                        ? "bg-blue-500 text-white"
-                        : "hover:bg-blue-200"
-                }`}
+                            className={`flex items-center space-x-3 w-full px-4 py-2 rounded-lg text-black transition-all duration-300 ease-in-out cursor-pointer ${
+                                activeMenu === item.name
+                                    ? "bg-slate-400 text-black"
+                                    : "hover:bg-slate-300"
+                            }`}
                         >
                             {item.icon}
                             <span>{item.name}</span>
