@@ -96,10 +96,16 @@ const MapView = ({ locations }) => {
                 <div className="flex-1 grid grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
                     {/* Map */}
                     <div className="flex-1 relative">
-                        {showRealMap ? (
-                            <div ref={mapRef} className="w-full h-full" />
-                        ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm h-full">
+                        <div
+                            ref={mapRef}
+                            className={`w-full h-full transition-opacity duration-300 ${
+                                showRealMap
+                                    ? "opacity-100"
+                                    : "opacity-0 pointer-events-none"
+                            }`}
+                        />
+                        {!showRealMap && (
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                                 <div className="text-center">
                                     <Map className="w-12 h-12 mx-auto mb-2 opacity-40" />
                                     <p>Click "Show Map" to view</p>

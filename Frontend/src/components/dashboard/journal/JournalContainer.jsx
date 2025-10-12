@@ -205,7 +205,7 @@ const JournalContainer = () => {
             </Modal>
 
             <button
-                className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-400 text-white fixed bottom-12 right-12 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors duration-300 ease-in-out cursor-pointer z-30"
+                className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-400 text-white fixed bottom-8 right-6 sm:bottom-12 sm:right-12 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors duration-300 ease-in-out cursor-pointer z-30"
                 onClick={() => {
                     setAddModalOpen({
                         isShow: true,

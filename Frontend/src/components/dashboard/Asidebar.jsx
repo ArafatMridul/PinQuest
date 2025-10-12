@@ -59,9 +59,10 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
             </AnimatePresence>
 
             {/* Mobile overlay + toggle */}
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
                 {mobileOpen && (
                     <motion.div
+                        key="overlay"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -72,6 +73,7 @@ const Asidebar = ({ setActiveMenu, activeMenu, menuItems }) => {
                 )}
                 {!mobileOpen && (
                     <motion.button
+                        key="menu-btn"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
