@@ -1,12 +1,15 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../../context/userContext";
 
 const LogoutPopup = ({ setClose, onClosePopup }) => {
     const navigate = useNavigate();
-
+    const { user } = useUser();
     const onSignOut = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("coords_cache");
+        localStorage.removeItem(`journals_${user.id}`);
         navigate("/");
     };
 

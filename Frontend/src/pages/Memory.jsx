@@ -121,7 +121,7 @@ const Memory = () => {
                                 <div
                                     key={journal.id}
                                     onClick={() => handleViewJournal(journal)}
-                                    className="bg-white rounded-xl border border-slate-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
+                                    className="bg-white rounded-3xl border border-slate-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
                                 >
                                     <TravelJournalCardMemory
                                         journal={journal}

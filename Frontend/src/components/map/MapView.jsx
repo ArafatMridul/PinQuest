@@ -16,6 +16,7 @@ const MapView = ({ locations }) => {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
     const markersRef = useRef([]);
+    const sidebarRef = useRef(null);
 
     useEffect(() => {
         if (showRealMap && mapRef.current && !mapInstanceRef.current) {
@@ -80,20 +81,34 @@ const MapView = ({ locations }) => {
         if (isNaN(lat) || isNaN(lng)) return;
 
         setSelectedLocation({ ...location, lat, lng });
-        if (!showRealMap) setShowRealMap(true);
-        else if (mapInstanceRef.current) {
+        if (!showRealMap) {
+            setShowRealMap(true);
+            setTimeout(() => {
+                mapInstanceRef.current.flyTo([lat, lng], 8, {
+                    animate: true,
+                    duration: 2,
+                });
+            }, 300);
+        } else if (mapInstanceRef.current) {
             mapInstanceRef.current.setView([lat, lng], 12, {
                 animate: true,
                 duration: 1,
             });
         }
+
+        if (sidebarRef.current) {
+            sidebarRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
     return (
         <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
-            <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll">
+            <div
+                ref={sidebarRef}
+                className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll"
+            >
                 {/* Content */}
-                <div className="flex-1 grid grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
+                <div className="flex-1 grid grid-rows-[40%_1fr] sm:grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
                     {/* Map */}
                     <div className="flex-1 relative">
                         <div
@@ -155,9 +170,9 @@ const MapView = ({ locations }) => {
                                             onClick={() =>
                                                 handlePinClick(location)
                                             }
-                                            className={`p-3 rounded cursor-pointer text-sm border transition ${
+                                            className={`p-3 rounded cursor-pointer text-sm border transition-all duration-300 ease-in-out ${
                                                 isSelected
-                                                    ? "bg-blue-50 border-blue-400"
+                                                    ? "bg-blue-50 border-blue-400 shadow-sm"
                                                     : "hover:bg-gray-50"
                                             }`}
                                         >
