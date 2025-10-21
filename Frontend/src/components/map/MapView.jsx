@@ -84,13 +84,13 @@ const MapView = ({ locations }) => {
         if (!showRealMap) {
             setShowRealMap(true);
             setTimeout(() => {
-                mapInstanceRef.current.flyTo([lat, lng], 8, {
+                mapInstanceRef.current.flyTo([lat, lng], 10, {
                     animate: true,
                     duration: 2,
                 });
             }, 300);
         } else if (mapInstanceRef.current) {
-            mapInstanceRef.current.setView([lat, lng], 12, {
+            mapInstanceRef.current.setView([lat, lng], 10, {
                 animate: true,
                 duration: 1,
             });
