@@ -36,12 +36,6 @@ const menuItems = [
         ),
     },
     {
-        name: "Recommendations",
-        icon: (
-            <HandThumbUpIcon className="h-5 w-5 text-black group-hover:text-white" />
-        ),
-    },
-    {
         name: "Logout",
         icon: (
             <ArrowLeftStartOnRectangleIcon className="h-5 w-5 text-black group-hover:text-white" />
@@ -60,10 +54,6 @@ const menuItemsAside = [
         icon: <Battery100Icon className="h-8 w-8 text-black" />,
     },
     { name: "Profile", icon: <UserIcon className="h-8 w-8 text-black" /> },
-    {
-        name: "Recommendations",
-        icon: <HandThumbUpIcon className="h-8 w-8 text-black" />,
-    },
     {
         name: "Logout",
         icon: <ArrowLeftStartOnRectangleIcon className="h-8 w-8 text-black" />,
