@@ -3,6 +3,6 @@ import { getRecommendedLocations } from "../controllers/recommendation.controlle
 
 const router = express.Router();
 
-router.get("/", getRecommendedLocations);
+router.post("/", getRecommendedLocations);
 
 export default router;
