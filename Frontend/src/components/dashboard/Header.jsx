@@ -22,7 +22,7 @@ const Header = ({ activeMenu }) => {
     };
 
     return (
-        <header className="absolute z-20 right-0 left-0 bg-white shadow p-4 flex justify-between items-center">
+        <header className="absolute z-20 right-0 left-0 bg-white border-b-1 border-slate-300 p-4 flex justify-between items-center">
             <h1
                 className={twMerge(
                     "text-sm lg:text-xl font-semibold",
@@ -57,7 +57,7 @@ const Header = ({ activeMenu }) => {
                     Hello,
                 </span>
                 <span className="text-end font-semibold capitalize text-xs lg:text-lg">
-                    {user?.firstName} {user?.lastName}
+                    {user?.firstName}
                 </span>
                 <img
                     src="/user.png"

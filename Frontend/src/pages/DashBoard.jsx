@@ -5,6 +5,7 @@ import {
     GlobeEuropeAfricaIcon,
     Battery100Icon,
     UserIcon,
+    HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
 
 import Asidebar from "../components/dashboard/Asidebar";
@@ -14,28 +15,58 @@ import { Link, useNavigate } from "react-router-dom";
 const menuItems = [
     {
         name: "Travel Journal",
-        icon: <GlobeEuropeAfricaIcon className="h-5 w-5" />,
+        icon: (
+            <GlobeEuropeAfricaIcon className="h-5 w-5 text-black group-hover:text-white" />
+        ),
     },
-    { name: "Map View", icon: <MapIcon className="h-5 w-5" /> },
-    { name: "Memories", icon: <Battery100Icon className="h-5 w-5" /> },
-    { name: "Profile", icon: <UserIcon className="h-5 w-5" /> },
+    {
+        name: "Map View",
+        icon: <MapIcon className="h-5 w-5 text-black group-hover:text-white" />,
+    },
+    {
+        name: "Memories",
+        icon: (
+            <Battery100Icon className="h-5 w-5 text-black group-hover:text-white" />
+        ),
+    },
+    {
+        name: "Profile",
+        icon: (
+            <UserIcon className="h-5 w-5 text-black group-hover:text-white" />
+        ),
+    },
+    {
+        name: "Recommendations",
+        icon: (
+            <HandThumbUpIcon className="h-5 w-5 text-black group-hover:text-white" />
+        ),
+    },
     {
         name: "Logout",
-        icon: <ArrowLeftStartOnRectangleIcon className="h-5 w-5" />,
+        icon: (
+            <ArrowLeftStartOnRectangleIcon className="h-5 w-5 text-black group-hover:text-white" />
+        ),
     },
 ];
 
 const menuItemsAside = [
     {
         name: "Travel Journal",
-        icon: <GlobeEuropeAfricaIcon className="h-8 w-8" />,
+        icon: <GlobeEuropeAfricaIcon className="h-8 w-8 text-black" />,
     },
-    { name: "Map View", icon: <MapIcon className="h-8 w-8" /> },
-    { name: "Memories", icon: <Battery100Icon className="h-8 w-8" /> },
-    { name: "Profile", icon: <UserIcon className="h-8 w-8" /> },
+    { name: "Map View", icon: <MapIcon className="h-8 w-8 text-black" /> },
+    {
+        name: "Memories",
+        icon: <Battery100Icon className="h-8 w-8 text-black" />,
+    },
+    { name: "Profile", icon: <UserIcon className="h-8 w-8 text-black" /> },
+    {
+        name: "Recommendations",
+        icon: <HandThumbUpIcon className="h-8 w-8 text-black" />,
+    },
     {
         name: "Logout",
-        icon: <ArrowLeftStartOnRectangleIcon className="h-8 w-8" />,
+        icon: <ArrowLeftStartOnRectangleIcon className="h-8 w-8 text-black" />,
     },
 ];
 
@@ -61,14 +92,14 @@ export default function DashBoard() {
     }
 
     return (
-        <div className="min-h-screen grid grid-cols-[48px_1fr] md:grid-cols-[256px_1fr] bg-gray-100">
-            <div className="bg-white">
+        <div className="min-h-screen grid grid-cols-[50px_1fr] md:grid-cols-[80px_1fr] xl:grid-cols-[256px_1fr] bg-gray-100">
+            <div className="bg-white border-r-1 border-slate-300">
                 <Asidebar
                     menuItems={menuItems}
                     setActiveMenu={setActiveMenu}
                     activeMenu={activeMenu}
                 />
-                <nav className="flex-1 px-1 space-y-2 pt-12">
+                <nav className="flex-1 px-1 md:px-3 space-y-2 pt-18 md:pt-20 sticky top-0">
                     {menuItemsAside.map((item) => (
                         <button
                             key={item.name}
@@ -77,7 +108,7 @@ export default function DashBoard() {
                             }}
                             className={`flex items-center justify-center space-x-3 w-full px-2 py-2 rounded-lg text-gray-700 transition ${
                                 activeMenu === item.name
-                                    ? "bg-blue-500 text-red"
+                                    ? "bg-slate-400 text-red"
                                     : "hover:bg-blue-200"
                             }`}
                         >

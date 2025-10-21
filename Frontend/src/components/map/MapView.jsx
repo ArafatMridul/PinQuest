@@ -16,6 +16,7 @@ const MapView = ({ locations }) => {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
     const markersRef = useRef([]);
+    const sidebarRef = useRef(null);
 
     useEffect(() => {
         if (showRealMap && mapRef.current && !mapInstanceRef.current) {
@@ -80,27 +81,45 @@ const MapView = ({ locations }) => {
         if (isNaN(lat) || isNaN(lng)) return;
 
         setSelectedLocation({ ...location, lat, lng });
-        if (!showRealMap) setShowRealMap(true);
-        else if (mapInstanceRef.current) {
+        if (!showRealMap) {
+            setShowRealMap(true);
+            setTimeout(() => {
+                mapInstanceRef.current.flyTo([lat, lng], 8, {
+                    animate: true,
+                    duration: 2,
+                });
+            }, 300);
+        } else if (mapInstanceRef.current) {
             mapInstanceRef.current.setView([lat, lng], 12, {
                 animate: true,
                 duration: 1,
             });
         }
-    };
 
-    console.log(locations);
+        if (sidebarRef.current) {
+            sidebarRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
 
     return (
         <div className="relative w-full h-screen bg-gray-50 p-2 lg:p-4 z-10 pt-16 lg:pt-22">
-            <div className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll">
+            <div
+                ref={sidebarRef}
+                className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll"
+            >
                 {/* Content */}
-                <div className="flex-1 grid grid-rows-2 lg:flex">
+                <div className="flex-1 grid grid-rows-[40%_1fr] sm:grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
                     {/* Map */}
                     <div className="flex-1 relative">
-                        {showRealMap ? (
-                            <div ref={mapRef} className="w-full h-full" />
-                        ) : (
+                        <div
+                            ref={mapRef}
+                            className={`w-full h-full transition-opacity duration-300 ${
+                                showRealMap
+                                    ? "opacity-100"
+                                    : "opacity-0 pointer-events-none"
+                            }`}
+                        />
+                        {!showRealMap && (
                             <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                                 <div className="text-center">
                                     <Map className="w-12 h-12 mx-auto mb-2 opacity-40" />
@@ -133,7 +152,7 @@ const MapView = ({ locations }) => {
                             </button>
                         </div>
                         {/* Sidebar */}
-                        <div className="w-full border-l p-4 flex-1">
+                        <div className="w-full border-l p-4 flex-1 overflow-scroll sbar">
                             <h2 className="text-sm font-semibold text-gray-700 mb-3">
                                 Locations ({locations.length})
                             </h2>
@@ -151,9 +170,9 @@ const MapView = ({ locations }) => {
                                             onClick={() =>
                                                 handlePinClick(location)
                                             }
-                                            className={`p-3 rounded cursor-pointer text-sm border transition ${
+                                            className={`p-3 rounded cursor-pointer text-sm border transition-all duration-300 ease-in-out ${
                                                 isSelected
-                                                    ? "bg-blue-50 border-blue-400"
+                                                    ? "bg-blue-50 border-blue-400 shadow-sm"
                                                     : "hover:bg-gray-50"
                                             }`}
                                         >

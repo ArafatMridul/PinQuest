@@ -121,7 +121,7 @@ const Memory = () => {
                                 <div
                                     key={journal.id}
                                     onClick={() => handleViewJournal(journal)}
-                                    className="bg-white rounded-xl border border-slate-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
+                                    className="bg-white rounded-3xl border border-slate-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
                                 >
                                     <TravelJournalCardMemory
                                         journal={journal}
@@ -150,11 +150,10 @@ const Memory = () => {
                         backdropFilter: "blur(6px)",
                         zIndex: 1000,
                         paddingTop: "8vh",
-                        paddingInline: "12px",
                     },
                 }}
                 appElement={document.getElementById("root")}
-                className="w-full sm:max-w-[85vw] lg:max-w-[950px] h-[80vh] bg-white rounded-xl shadow-2xl mx-auto p-6 overflow-y-auto scrollbar"
+                className="w-fit bg-white rounded-3xl shadow-2xl mx-auto overflow-y-auto scrollbar"
             >
                 <ViewJournalMemory
                     onClose={() => {
