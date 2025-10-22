@@ -78,7 +78,7 @@ const JournalContainer = () => {
     };
 
     const allJournals =
-        filteredJournal.length === 0 ? journals : filteredJournal;
+        filteredJournal?.length === 0 ? journals : filteredJournal;
 
     return (
         <div className="p-3 sm:p-4 lg:p-6">

@@ -41,21 +41,21 @@ const SignupPage = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900  to-black/70 text-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full px-6">
-                <div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl w-full px-6">
+                <div className="hidden lg:block">
                     <img
                         src="/assets/images/login-img.jpg"
                         alt=""
                         className="h-full w-full"
                     />
                 </div>
-                <div className="w-full max-w-md bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-gray-700">
+                <div className="w-full max-w-xl bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-gray-700 mx-auto">
                     <h2 className="text-3xl font-extrabold text-white mb-2 text-center tracking-wide">
                         Sign Up To Get Started
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4 mt-10">
-                        <div className="flex items-center gap-6">
+                        <div className="grid lg:flex items-center gap-6">
                             <div>
                                 <label className="block text-gray-300 text-sm font-medium mb-1">
                                     First Name

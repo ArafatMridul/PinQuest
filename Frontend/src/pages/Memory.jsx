@@ -47,7 +47,7 @@ const Memory = () => {
     };
 
     return (
-        <div className="relative z-20 pt-16 w-fit">
+        <div className="relative z-20 pt-16">
             <div className="p-3 sm:p-6 w-full mx-auto space-y-8">
                 <div>
                     <h3 className="flex items-center gap-2 font-bold">
@@ -74,7 +74,7 @@ const Memory = () => {
                                 }}
                                 className="overflow-hidden"
                             >
-                                <div className="flex flex-wrap items-center gap-4 px-4 py-2">
+                                <div className="flex flex-wrap items-center gap-4 px-4 py-2 md:grid md:grid-cols-5 md:max-w-[450px]">
                                     {uniqueCountryCodes.map((code) => (
                                         <div
                                             key={code}
@@ -83,7 +83,7 @@ const Memory = () => {
                                             <img
                                                 src={`https://flagcdn.com/w40/${code}.png`}
                                                 alt={`${code}`}
-                                                className="h-6 w-10"
+                                                className="h-6 w-10 mx-auto"
                                             />
                                         </div>
                                     ))}

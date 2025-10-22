@@ -108,7 +108,7 @@ const MapView = ({ locations }) => {
                 className="h-full mx-auto bg-white rounded-lg border lg:flex lg:flex-row overflow-scroll"
             >
                 {/* Content */}
-                <div className="flex-1 grid grid-rows-[40%_1fr] sm:grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
+                <div className="h-full flex-1 grid grid-rows-[40%_1fr] sm:grid-rows-[50%_1fr] lg:grid-rows-1 lg:grid-cols-[1fr_22%]">
                     {/* Map */}
                     <div className="flex-1 relative">
                         <div

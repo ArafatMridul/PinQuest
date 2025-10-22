@@ -6,6 +6,11 @@ const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const token = localStorage.getItem("token");
 
+    const logout = () => {
+        localStorage.clear();
+        setUser(null);
+    };
+
     useEffect(() => {
         const getUserInfo = async () => {
             try {
@@ -28,7 +33,9 @@ const UserProvider = ({ children }) => {
         getUserInfo();
     }, [token]);
     return (
-        <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+        <UserContext.Provider value={{ user, logout }}>
+            {children}
+        </UserContext.Provider>
     );
 };
 

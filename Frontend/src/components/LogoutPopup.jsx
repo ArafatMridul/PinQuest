@@ -5,11 +5,9 @@ import { useUser } from "../../context/userContext";
 
 const LogoutPopup = ({ setClose, onClosePopup }) => {
     const navigate = useNavigate();
-    const { user } = useUser();
+    const { logout } = useUser();
     const onSignOut = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("coords_cache");
-        localStorage.removeItem(`journals_${user.id}`);
+        logout();
         navigate("/");
     };
 
