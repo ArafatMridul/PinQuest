@@ -10,8 +10,9 @@
     - [Running with Docker (Recommended)](#running-with-docker-recommended)
     - [Local Setup (Manual)](#local-setup-manual)
 5. [API Endpoints](#5-api-endpoints)
-6. [Contributing](#6-contributing)
-7. [License](#7-license)
+6. [Feature Gallery](#6-feature-gallery)
+7. [Contributing](#7-contributing)
+8. [License](#8-license)
 
 ---
 
