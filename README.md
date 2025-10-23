@@ -215,44 +215,7 @@ Click on any image to view it in full size.
 
 ### 🎬 Live Demo
 
-<div align="center" style="margin: 3rem 0;">
-  <div style="position: relative; max-width: 900px; margin: 0 auto; padding: 0 20px;">
-    <div style="
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 4px;
-    ">
-      <video 
-        src="./screenshots/PinQuest.mp4" 
-        width="100%" 
-        controls 
-        loop 
-        muted 
-        playsinline
-        style="
-          display: block;
-          border-radius: 8px;
-          background: #000;
-        "
-      >
-        Your browser does not support the video tag.
-      </video>
-    </div>
-    <p style="
-      margin-top: 1.5rem;
-      font-size: 0.95rem;
-      color: #6b7280;
-      font-style: italic;
-      line-height: 1.6;
-    ">
-      ✨ <strong>PinQuest</strong> — Document your adventures, pin your memories, explore your world
-    </p>
-  </div>
-</div>
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://github.com/ArafatMridul/PinQuest/raw/main/screenshots/PinQuest.mp4)
 </div>
 
 ## 7. Contributing
