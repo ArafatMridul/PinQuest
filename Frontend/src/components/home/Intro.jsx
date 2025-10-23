@@ -60,7 +60,7 @@ const Intro = () => {
                     <div className="hidden md:block absolute top-10 left-0 right-0 h-0.5 bg-gray-300"></div>
 
                     {steps.map((step, index) => (
-                        <div key={index} className="relative text-center group">
+                        <div key={index} className="relative text-center group md:grid md:grid-rows-[fit_1fr]">
                             <div className="relative inline-flex flex-col items-center">
                                 <div className="w-20 h-20 bg-gray-900 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4 shadow-md group-hover:scale-110 transition-transform duration-300 relative z-10">
                                     {step.number}
