@@ -13,7 +13,7 @@ const Navbar = ({ scrolled }) => {
                 scrolled
                     ? "bg-white/50 backdrop-blur-md"
                     : "bg-transparent backdrop-blur-md"
-            }`}
+            } ${isOpen && "h-screen"}`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
@@ -87,7 +87,7 @@ const Navbar = ({ scrolled }) => {
                 {/* Mobile Dropdown */}
                 {isOpen && (
                     <div
-                        className={`md:hidden pb-4 animate-fade-in ${
+                        className={`md:hidden px-4 py-8 text-center rounded-md animate-fade-in mt-6 ${
                             scrolled ? "bg-white" : "bg-gray-900/80"
                         }`}
                     >
@@ -107,7 +107,7 @@ const Navbar = ({ scrolled }) => {
                             </a>
                         ))}
                         <button
-                            className={`w-full mt-4 px-5 py-2 rounded-lg text-sm font-semibold ${
+                            className={`w-full mt-4 px-5 py-2 rounded-sm text-sm font-semibold ${
                                 scrolled
                                     ? "bg-black text-white hover:bg-gray-800"
                                     : "bg-white text-black hover:bg-gray-200"
