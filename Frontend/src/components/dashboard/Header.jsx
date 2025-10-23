@@ -5,7 +5,7 @@ import SearchBar from "../SearchBar";
 import { FaSearch } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-const Header = ({ activeMenu }) => {
+const Header = ({ activeMenu, setActiveMenu }) => {
     const { user } = useUser();
     const { searchQuery, setSearchQuery, onSearchJournal, setFilteredJournal } =
         useJournal();
@@ -60,9 +60,10 @@ const Header = ({ activeMenu }) => {
                     {user?.firstName}
                 </span>
                 <img
+                    onClick={() => setActiveMenu("Profile")}
                     src="/user.png"
                     alt="user avatar"
-                    className="size-6 lg:size-10 rounded-full"
+                    className="size-6 lg:size-10 rounded-full cursor-pointer"
                 />
             </div>
         </header>

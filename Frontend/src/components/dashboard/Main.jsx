@@ -17,7 +17,7 @@ const Main = ({ activeMenu, setActiveMenu }) => {
 
     return (
         <div className="flex-1 flex flex-col">
-            <Header activeMenu={activeMenu} />
+            <Header activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
 
             <main className="flex-1 relative">
                 {activeMenu === "Travel Journal" && <JournalContainer />}
